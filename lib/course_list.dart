@@ -13,13 +13,30 @@ class CourseList extends StatefulWidget {
 
 class _CourseListState extends State<CourseList> {
   final List<Map<String, dynamic>> courses = [
-    {'name': 'Mathematics', 'grade': 'A', 'credits': 3},
-    {'name': 'Physics', 'grade': 'B+', 'credits': 4},
-    {'name': 'History', 'grade': 'A-', 'credits': 3},
+    {'completed': 'yes', 'name': 'Mathematics', 'grade': '2.71', 'icon': 'house', 'credits': 4},
   ];
 
   double get predictedGPA {
-    return 3.8;
+    double totalGradePoints = 0;
+    int totalCredits = 0;
+
+    for (var course in courses) {
+      // Safely parse the grade from String to Double
+      double grade = double.tryParse(course['grade'].toString()) ?? 0.0;
+      int credits = course['credits'];
+
+      totalGradePoints += grade * credits;
+      totalCredits += credits;
+    }
+
+    return totalCredits > 0 ? totalGradePoints / totalCredits : 0.0;
+  }
+
+
+  void addCourse(Map<String, dynamic> course) {
+    setState(() {
+      courses.add(course);
+    });
   }
 
   void deleteCourse(int index) {
@@ -52,11 +69,17 @@ class _CourseListState extends State<CourseList> {
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).colorScheme.scrim,
           foregroundColor: Theme.of(context).colorScheme.surface,
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            // Navigate to AddCourseScreen and wait for the returned data
+            final newCourse = await Navigator.push<Map<String, dynamic>>(
               context,
-              MaterialPageRoute(builder: (context) => const AddCourseScreen()),
+              MaterialPageRoute(builder: (context) => AddCourseScreen()),
             );
+
+            // If a course was returned, add it to the list
+            if (newCourse != null) {
+              addCourse(newCourse);
+            }
           },
           child: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
         ),

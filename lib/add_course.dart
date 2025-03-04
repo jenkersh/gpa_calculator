@@ -120,9 +120,19 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
 
 
   void _saveCourse() {
-    // TODO: Implement saving logic
-    Navigator.pop(context);
+    // Prepare course data
+    final newCourse = {
+      'completed': _isCompleted ? 'yes' : 'no',
+      'name': _nameController.text,
+      'grade': _gradeController.text,
+      'icon': _selectedIcon.toString(),
+      'credits': _selectedCredits,
+    };
+
+    // Pass data back to the CourseList page
+    Navigator.pop(context, newCourse);
   }
+
 
   @override
   Widget build(BuildContext context) {
