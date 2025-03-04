@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:gpa_calculator/my_textfield.dart';
+import 'package:gpa_calculator/my_tile.dart';
 
 class AddCourseScreen extends StatefulWidget {
   const AddCourseScreen({super.key});
@@ -48,6 +48,46 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     );
   }
 
+  void _showEditor({required String editorType}) {
+    TextEditingController controller;
+    String title;
+
+    if (editorType == 'name') {
+      controller = _nameController;
+      title = "Edit Course Name";
+    } else {
+      controller = _gradeController;
+      title = "Edit Grade";
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: TextField(
+            controller: controller,
+            keyboardType: editorType == 'grade' ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+            decoration: InputDecoration(hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {});
+                Navigator.pop(context);
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showIconPicker() {
     showModalBottomSheet(
       context: context,
@@ -75,52 +115,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     );
   }
 
-  void _showEditor({required String editorType}) {
-    TextEditingController _controller;
-    TextInputType inputType;
-
-    // Set the controller and keyboard type based on the editor type
-    if (editorType == 'name') {
-      _controller = _nameController; // Use the name controller for name editing
-      inputType = TextInputType.text; // Regular keyboard for text input
-    } else {
-      _controller = _gradeController; // Use the grade controller for grade editing
-      inputType = TextInputType.numberWithOptions(decimal: true); // Numeric keyboard with decimal support
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(editorType == 'name' ? "Edit Course Name" : "Edit Grade"),
-          content: TextField(
-            controller: _controller,
-            keyboardType: inputType, // Set the keyboard type
-            decoration: InputDecoration(
-              hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {});
-                Navigator.pop(context);
-              },
-              child: const Text("Save"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-
   void _saveCourse() {
-    // Prepare course data
     final newCourse = {
       'completed': _isCompleted ? 'yes' : 'no',
       'name': _nameController.text,
@@ -129,25 +124,22 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       'credits': _selectedCredits,
     };
 
-    // Pass data back to the CourseList page
     Navigator.pop(context, newCourse);
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Add Course")),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Course Completed?"),
-                FlutterSwitch(
+            ListTile(
+              title: const Text("Course Completed?", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              trailing: SizedBox(
+                width: 75, // Constraint width to avoid excessive space usage
+                child: FlutterSwitch(
                   value: _isCompleted,
                   onToggle: (value) => setState(() => _isCompleted = value),
                   activeText: "Yes",
@@ -156,80 +148,40 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   inactiveColor: Colors.grey,
                   showOnOff: true,
                 ),
-              ],
+              ),
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Course Name"),
-                Row(
-                  children: [
-                    Text(_nameController.text.isEmpty ? "Not Set" : _nameController.text),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => _showEditor(editorType: 'name'),
-                    ),
-                  ],
-                ),
-              ],
+
+            //Divider(color: Colors.grey.shade300, thickness: 1, indent: 20, endIndent: 20),
+            MyTile(
+              title: "Course Name",
+              value: _nameController.text.isEmpty ? "My Course" : _nameController.text,
+              onEdit: () => _showEditor(editorType: 'name'),
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(_isCompleted ? "Grade" : "Predicted Grade"),
-                Row(
-                  children: [
-                    Text(_gradeController.text.isEmpty ? "Not Set" : _gradeController.text),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => _showEditor(editorType: 'grade'),
-                    ),
-                  ],
-                ),
-              ],
+            MyTile(
+              title: _isCompleted ? "Grade" : "Predicted Grade",
+              value: _gradeController.text.isEmpty ? "0.0" : _gradeController.text,
+              onEdit: () => _showEditor(editorType: 'grade'),
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Icon"),
-                Row(
-                  children: [
-                    Icon(_selectedIcon),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: _showIconPicker,
-                    ),
-                  ],
-                ),
-              ],
+            MyTile(
+              title: "Icon",
+              value: "Selected Icon",
+              onEdit: _showIconPicker,
             ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Credits"),
-                Row(
-                  children: [
-                    Text(_selectedCredits.toString()),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () => _showCreditPicker(context),
-                    ),
-                  ],
-                ),
-              ],
+            MyTile(
+              title: "Credits",
+              value: _selectedCredits.toString(),
+              onEdit: () => _showCreditPicker(context),
             ),
-            const SizedBox(height: 20),
-            Center(
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: ElevatedButton(
-                onPressed: _saveCourse,
-                child: Text(
-                  "Save Course",
-                  style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.scrim,
+                  minimumSize: const Size(double.infinity, 50),
                 ),
+                onPressed: _saveCourse,
+                child: Text("Save Course", style: TextStyle(color: Colors.black, fontSize: 18)),
               ),
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gpa_calculator/my_tile.dart';
 import 'package:gpa_calculator/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -51,49 +52,46 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
-          ListTile(
-            title: const Text('Current GPA'),
-            subtitle: Text(currentGPA.toStringAsFixed(2)),
-            trailing: IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () => _editValue('Current GPA', currentGPA, (val) => currentGPA = val),
-            ),
+          MyTile(
+            title: 'Current GPA',
+            value: currentGPA.toStringAsFixed(2),
+            onEdit: () => _editValue('Current GPA', currentGPA, (val) => currentGPA = val),
           ),
-          ListTile(
-            title: const Text('Previously Completed Credits'),
-            subtitle: Text(completedCredits.toString()),
-            trailing: IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () => _editValue('Previously Completed Credits', completedCredits, (val) => completedCredits = val.toInt()),
-            ),
+          MyTile(
+            title: 'Previously Completed Credits',
+            value: completedCredits.toString(),
+            onEdit: () => _editValue('Previously Completed Credits', completedCredits, (val) => completedCredits = val.toInt()),
           ),
-          ListTile(
-            title: const Text('Target GPA'),
-            subtitle: Text(targetGPA.toStringAsFixed(2)),
-            trailing: IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () => _editValue('Target GPA', targetGPA, (val) => targetGPA = val),
-            ),
+          MyTile(
+            title: 'Target GPA',
+            value: targetGPA.toStringAsFixed(2),
+            onEdit: () => _editValue('Target GPA', targetGPA, (val) => targetGPA = val),
           ),
-          const Divider(),
-          ListTile(
-            title: const Text('Contact Us'),
-            leading: const Icon(Icons.email),
-            onTap: () {
-              // TODO: Implement contact functionality
-            },
-          ),
+          //const Divider(),
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             title: const Text(
               'Dark Mode',
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             trailing: CupertinoSwitch(
               activeColor: Theme.of(context).colorScheme.scrim,
               value: Provider.of<ThemeProvider>(context, listen: false).isDarkMode,
               onChanged: (value) => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
             ),
+          ),
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            title: const Text(
+              'Contact Us',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            //leading: const Icon(Icons.email),
+            trailing: IconButton(
+              onPressed: (){},
+              icon: Icon(Icons.open_in_new)),
+            onTap: () {
+              // TODO: Implement contact functionality
+            },
           ),
         ],
       ),

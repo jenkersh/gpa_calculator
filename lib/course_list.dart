@@ -66,23 +66,27 @@ class _CourseListState extends State<CourseList> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(20),
-        child: FloatingActionButton(
+        child: FloatingActionButton.extended(
           backgroundColor: Theme.of(context).colorScheme.scrim,
           foregroundColor: Theme.of(context).colorScheme.surface,
           onPressed: () async {
-            // Navigate to AddCourseScreen and wait for the returned data
             final newCourse = await Navigator.push<Map<String, dynamic>>(
               context,
               MaterialPageRoute(builder: (context) => AddCourseScreen()),
             );
 
-            // If a course was returned, add it to the list
             if (newCourse != null) {
               addCourse(newCourse);
             }
           },
-          child: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
+          icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
+          label: const Text("Add Course"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
+          ),
         ),
+
+
       ),
       body: Column(
         children: [
@@ -107,6 +111,11 @@ class _CourseListState extends State<CourseList> {
                   endActionPane: ActionPane(
                     motion: const DrawerMotion(),
                     children: [
+                      SlidableAction(
+                        onPressed: (context) => {},
+                        icon: Icons.edit,
+                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                      ),
                       SlidableAction(
                         onPressed: (context) => deleteCourse(index),
                         icon: Icons.delete,
