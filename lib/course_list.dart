@@ -13,7 +13,7 @@ class CourseList extends StatefulWidget {
 
 class _CourseListState extends State<CourseList> {
   final List<Map<String, dynamic>> courses = [
-    {'completed': 'yes', 'name': 'Mathematics', 'grade': '2.71', 'icon': 'house', 'credits': 4},
+    {'completed': 'yes', 'name': 'Mathematics', 'grade': '2.71', 'icon': 2, 'credits': 4},
   ];
 
   double get predictedGPA {
@@ -129,7 +129,10 @@ class _CourseListState extends State<CourseList> {
                       HapticFeedback.lightImpact();
                       // TODO: Implement edit course details
                     },
-                    leading: Icon(Icons.school, color: Theme.of(context).colorScheme.primary),
+                    leading: Icon(
+                      IconData(course['icon'], fontFamily: 'MaterialIcons'),
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     title: Text(
                       course['name'],
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

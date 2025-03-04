@@ -17,6 +17,32 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   int _selectedCredits = 3;
   bool _isCompleted = false;
   IconData _selectedIcon = Icons.school;
+  final Map<String, IconData> courseIcons = {
+  "Math": Icons.calculate,
+  "Science": Icons.biotech,
+  "History": Icons.menu_book,
+  "English": Icons.book,
+  "Computer Science": Icons.computer,
+  "Music": Icons.music_note,
+  "Art": Icons.palette,
+  "Physical Education": Icons.sports_soccer,
+  "Economics": Icons.attach_money,
+  "Psychology": Icons.psychology,
+  "Chemistry": Icons.science,
+  "Physics": Icons.waves,
+  "Biology": Icons.eco,
+  "Geography": Icons.public,
+  "Philosophy": Icons.self_improvement,
+  "Business": Icons.business,
+  "Engineering": Icons.build,
+  "Law": Icons.gavel,
+  "Medicine": Icons.local_hospital,
+  "Astronomy": Icons.auto_stories,
+  "Theater": Icons.theater_comedy,
+  "Culinary Arts": Icons.restaurant,
+  "Foreign Language": Icons.translate,
+  "Literature": Icons.menu_book,
+  "Political Science": Icons.account_balance};
 
   void _showCreditPicker(BuildContext context) {
     showCupertinoModalPopup(
@@ -99,15 +125,24 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemCount: 10,
+          itemCount: courseIcons.length,
           itemBuilder: (context, index) {
-            final icon = Icons.circle;
-            return IconButton(
-              icon: Icon(icon, size: 30),
-              onPressed: () {
-                setState(() => _selectedIcon = icon);
-                Navigator.pop(context);
-              },
+            String courseName = courseIcons.keys.elementAt(index);
+            IconData icon = courseIcons[courseName]!;
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 20),
+                IconButton(
+                  icon: Icon(icon, size: 30, color: Theme.of(context).colorScheme.tertiary),
+                  onPressed: () {
+                    setState(() => _selectedIcon = icon);
+                    Navigator.pop(context);
+                  },
+                ),
+                //Text(courseName, style: const TextStyle(fontSize: 12)),
+              ],
             );
           },
         );
@@ -115,12 +150,13 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     );
   }
 
+
   void _saveCourse() {
     final newCourse = {
       'completed': _isCompleted ? 'yes' : 'no',
       'name': _nameController.text,
       'grade': _gradeController.text,
-      'icon': _selectedIcon.toString(),
+      'icon': _selectedIcon.codePoint, // Save the icon as a codePoint
       'credits': _selectedCredits,
     };
 
@@ -163,14 +199,14 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               onEdit: () => _showEditor(editorType: 'grade'),
             ),
             MyTile(
-              title: "Icon",
-              value: "Selected Icon",
-              onEdit: _showIconPicker,
-            ),
-            MyTile(
               title: "Credits",
               value: _selectedCredits.toString(),
               onEdit: () => _showCreditPicker(context),
+            ),
+            MyTile(
+              title: "Course Icon",
+              value: Icon(_selectedIcon, color: Theme.of(context).colorScheme.tertiary), // Not needed for icon selection
+              onEdit: _showIconPicker,
             ),
             const Spacer(),
             Padding(

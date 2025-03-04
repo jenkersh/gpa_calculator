@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MyTile extends StatelessWidget {
   final String title;
-  final String value;
+  final dynamic value; // Can be either String or Widget
   final VoidCallback onEdit;
 
   const MyTile({
@@ -24,9 +24,14 @@ class MyTile extends StatelessWidget {
           ),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 5),
-            child: Text(
-              value,
-              style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.tertiary),
+            child: Align(
+              alignment: Alignment.centerLeft, // Ensures left alignment
+              child: value is String
+                  ? Text(
+                value,
+                style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.tertiary),
+              )
+                  : value, // Use the widget directly if not a string
             ),
           ),
           trailing: IconButton(
