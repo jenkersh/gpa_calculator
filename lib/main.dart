@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gpa_calculator/course_list.dart';
+import 'package:gpa_calculator/gpa_provider.dart';
 import 'package:gpa_calculator/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -10,10 +11,10 @@ void main() {
     DeviceOrientation.portraitUp,
   ]);
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
-      child: const MyApp(),
-    ),
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (context) => GPAProvider()),
+      ChangeNotifierProvider(create: (context) => ThemeProvider()),
+    ], child: const MyApp()),
   );
 }
 

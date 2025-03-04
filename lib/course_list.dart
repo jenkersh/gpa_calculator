@@ -3,6 +3,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter/services.dart';
 import 'package:gpa_calculator/add_course.dart';
 import 'package:gpa_calculator/settings_page.dart';
+import 'package:gpa_calculator/gpa_provider.dart';
+import 'package:provider/provider.dart';
 
 class CourseList extends StatefulWidget {
   const CourseList({super.key});
@@ -21,7 +23,6 @@ class _CourseListState extends State<CourseList> {
     int totalCredits = 0;
 
     for (var course in courses) {
-      // Safely parse the grade from String to Double
       double grade = double.tryParse(course['grade'].toString()) ?? 0.0;
       int credits = course['credits'];
 
@@ -31,7 +32,6 @@ class _CourseListState extends State<CourseList> {
 
     return totalCredits > 0 ? totalGradePoints / totalCredits : 0.0;
   }
-
 
   void addCourse(Map<String, dynamic> course) {
     setState(() {
@@ -45,12 +45,33 @@ class _CourseListState extends State<CourseList> {
     });
   }
 
+  void editCourse(int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AddCourseScreen(
+          courseData: courses[index],  // Pass the existing course data
+          isEdit: true,  // Flag to indicate edit mode
+        ),
+      ),
+    ).then((updatedCourse) {
+      if (updatedCourse != null) {
+        setState(() {
+          courses[index] = updatedCourse;  // Update the course in the list
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final gpaProvider = Provider.of<GPAProvider>(context);
+    final targetGPA = gpaProvider.targetGPA;
+    final bool isBelowTarget = predictedGPA < targetGPA;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        //title: const Text('GPA Calculator'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -82,28 +103,64 @@ class _CourseListState extends State<CourseList> {
           icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
           label: const Text("Add Course"),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
+            borderRadius: BorderRadius.circular(50),
           ),
         ),
-
-
       ),
       body: Column(
         children: [
-          Container(
-            height: MediaQuery.of(context).size.height * 0.3,
-            color: Theme.of(context).colorScheme.primaryContainer,
-            alignment: Alignment.center,
-            child: Text(
-              'Predicted GPA: ${predictedGPA.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+          Stack(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                color: Theme.of(context).colorScheme.primaryContainer,
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: isBelowTarget ? Colors.red : Theme.of(context).colorScheme.inversePrimary,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: 'Predicted GPA: ',
+                            style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '${predictedGPA.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      isBelowTarget ? "You are NOT on track to meet your target." : "You are on track to meet your target!",
+                      style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary.withOpacity(.9)),
+                    ),
+                  ],
+                ),
+              ),
+              if (isBelowTarget) // Overlay only if GPA is below target
+                Positioned.fill(
+                  child: Container(
+                    color: Colors.red.withOpacity(0.3), // Semi-transparent red overlay
+                  ),
+                ),
+            ],
           ),
           Expanded(
             child: courses.isEmpty
                 ? const Center(child: Text('No courses added. Press the "+" to start!'))
                 : ListView.separated(
-              padding: const EdgeInsets.only(top: 10),
+              //padding: const EdgeInsets.only(top: 10),
               itemCount: courses.length,
               itemBuilder: (context, index) {
                 final course = courses[index];
@@ -112,7 +169,7 @@ class _CourseListState extends State<CourseList> {
                     motion: const DrawerMotion(),
                     children: [
                       SlidableAction(
-                        onPressed: (context) => {},
+                        onPressed: (context) => editCourse(index),
                         icon: Icons.edit,
                         backgroundColor: Theme.of(context).colorScheme.tertiary,
                       ),
@@ -125,20 +182,17 @@ class _CourseListState extends State<CourseList> {
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      // TODO: Implement edit course details
-                    },
+                    onTap: () => editCourse(index),
                     leading: Icon(
                       IconData(course['icon'], fontFamily: 'MaterialIcons'),
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.tertiary,
                     ),
                     title: Text(
                       course['name'],
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Text(
-                      'Grade: ${course['grade']} \u2022 ${course['credits']} credits',
+                      course['completed'] == 'yes' ? 'Grade: ${course['grade']} \u2022 ${course['credits']} credits' : 'Predicted Grade: ${course['grade']} \u2022 ${course['credits']} credits',
                       style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     ),
                   ),
@@ -148,7 +202,7 @@ class _CourseListState extends State<CourseList> {
                 return Divider(
                   height: 1,
                   thickness: 1,
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                  color: Theme.of(context).colorScheme.primary,
                   indent: 20,
                   endIndent: 20,
                 );

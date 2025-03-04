@@ -5,7 +5,10 @@ import 'package:flutter_switch/flutter_switch.dart';
 import 'package:gpa_calculator/my_tile.dart';
 
 class AddCourseScreen extends StatefulWidget {
-  const AddCourseScreen({super.key});
+  final Map<String, dynamic>? courseData; // Optionally pass course data
+  final bool isEdit;  // Flag to indicate if it's edit mode
+
+  const AddCourseScreen({Key? key, this.courseData, this.isEdit = false}) : super(key: key);
 
   @override
   State<AddCourseScreen> createState() => _AddCourseScreenState();
@@ -14,35 +17,62 @@ class AddCourseScreen extends StatefulWidget {
 class _AddCourseScreenState extends State<AddCourseScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _gradeController = TextEditingController();
-  int _selectedCredits = 3;
+  int _selectedCredits = 3; // Default to 3 credits
   bool _isCompleted = false;
   IconData _selectedIcon = Icons.school;
   final Map<String, IconData> courseIcons = {
-  "Math": Icons.calculate,
-  "Science": Icons.biotech,
-  "History": Icons.menu_book,
-  "English": Icons.book,
-  "Computer Science": Icons.computer,
-  "Music": Icons.music_note,
-  "Art": Icons.palette,
-  "Physical Education": Icons.sports_soccer,
-  "Economics": Icons.attach_money,
-  "Psychology": Icons.psychology,
-  "Chemistry": Icons.science,
-  "Physics": Icons.waves,
-  "Biology": Icons.eco,
-  "Geography": Icons.public,
-  "Philosophy": Icons.self_improvement,
-  "Business": Icons.business,
-  "Engineering": Icons.build,
-  "Law": Icons.gavel,
-  "Medicine": Icons.local_hospital,
-  "Astronomy": Icons.auto_stories,
-  "Theater": Icons.theater_comedy,
-  "Culinary Arts": Icons.restaurant,
-  "Foreign Language": Icons.translate,
-  "Literature": Icons.menu_book,
-  "Political Science": Icons.account_balance};
+    "Math": Icons.calculate,
+    "Science": Icons.biotech,
+    "History": Icons.menu_book,
+    "English": Icons.book,
+    "Computer Science": Icons.computer,
+    "Music": Icons.music_note,
+    "Art": Icons.palette,
+    "Physical Education": Icons.sports_soccer,
+    "Economics": Icons.attach_money,
+    "Psychology": Icons.psychology,
+    "Chemistry": Icons.science,
+    "Physics": Icons.waves,
+    "Biology": Icons.eco,
+    "Geography": Icons.public,
+    "Philosophy": Icons.self_improvement,
+    "Business": Icons.business,
+    "Engineering": Icons.build,
+    "Law": Icons.gavel,
+    "Medicine": Icons.local_hospital,
+    "Astronomy": Icons.auto_stories,
+    "Theater": Icons.theater_comedy,
+    "Culinary Arts": Icons.restaurant,
+    "Foreign Language": Icons.translate,
+    "Literature": Icons.menu_book,
+    "Political Science": Icons.account_balance
+  };
+  int _courseIcon = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEdit && widget.courseData != null) {
+      // Populate the fields with existing data for editing
+      _nameController.text = widget.courseData!['name'];
+      _gradeController.text = widget.courseData!['grade'];
+      _selectedCredits = widget.courseData!['credits'] ?? 3;  // Populate the credits from the existing data
+      _courseIcon = widget.courseData!['icon'];
+
+      // Convert the icon code point back to the IconData and set _selectedIcon
+      _selectedIcon = IconData(
+        _courseIcon,
+        fontFamily: 'MaterialIcons',
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _gradeController.dispose();
+    super.dispose();
+  }
 
   void _showCreditPicker(BuildContext context) {
     showCupertinoModalPopup(
@@ -57,11 +87,11 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               child: CupertinoPicker(
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 itemExtent: 32,
-                scrollController: FixedExtentScrollController(initialItem: _selectedCredits),
+                scrollController: FixedExtentScrollController(initialItem: _selectedCredits - 1), // Adjust index to match the range
                 onSelectedItemChanged: (value) {
-                  setState(() => _selectedCredits = value);
+                  setState(() => _selectedCredits = value + 1);  // Update selectedCredits, ensuring it's 1-based
                 },
-                children: List.generate(11, (index) => Text('$index')), // 0-10 credits
+                children: List.generate(10, (index) => Text('${index + 1}')), // 1-10 credits
               ),
             ),
             TextButton(
@@ -150,7 +180,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     );
   }
 
-
   void _saveCourse() {
     final newCourse = {
       'completed': _isCompleted ? 'yes' : 'no',
@@ -166,7 +195,8 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Course")),
+      appBar: AppBar(
+          title: Text(widget.isEdit ? 'Edit Course' : 'Add Course')),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Column(
@@ -186,8 +216,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                 ),
               ),
             ),
-
-            //Divider(color: Colors.grey.shade300, thickness: 1, indent: 20, endIndent: 20),
             MyTile(
               title: "Course Name",
               value: _nameController.text.isEmpty ? "My Course" : _nameController.text,
@@ -217,7 +245,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   minimumSize: const Size(double.infinity, 50),
                 ),
                 onPressed: _saveCourse,
-                child: Text("Save Course", style: TextStyle(color: Colors.black, fontSize: 18)),
+                child: Text(widget.isEdit ? 'Save Changes' : 'Add Course', style: TextStyle(color: Colors.black, fontSize: 18)),
               ),
             ),
           ],
