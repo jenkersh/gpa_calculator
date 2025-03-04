@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter/services.dart';
+import 'package:gpa_calculator/add_course.dart';
+import 'package:gpa_calculator/settings_page.dart';
 
 class CourseList extends StatefulWidget {
   const CourseList({super.key});
@@ -29,6 +31,21 @@ class _CourseListState extends State<CourseList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        //title: const Text('GPA Calculator'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
+              );
+            },
+          ),
+        ],
+      ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(20),
@@ -36,7 +53,10 @@ class _CourseListState extends State<CourseList> {
           backgroundColor: Theme.of(context).colorScheme.scrim,
           foregroundColor: Theme.of(context).colorScheme.surface,
           onPressed: () {
-            // TODO: Implement Add Course functionality
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddCourseScreen()),
+            );
           },
           child: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
         ),
@@ -65,13 +85,6 @@ class _CourseListState extends State<CourseList> {
                     motion: const DrawerMotion(),
                     children: [
                       SlidableAction(
-                        onPressed: (context) {
-                          // TODO: Implement edit functionality
-                        },
-                        icon: Icons.edit,
-                        backgroundColor: Theme.of(context).colorScheme.secondary,
-                      ),
-                      SlidableAction(
                         onPressed: (context) => deleteCourse(index),
                         icon: Icons.delete,
                         backgroundColor: Theme.of(context).colorScheme.error,
@@ -82,7 +95,7 @@ class _CourseListState extends State<CourseList> {
                     contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                     onTap: () {
                       HapticFeedback.lightImpact();
-                      // TODO: Implement course details navigation
+                      // TODO: Implement edit course details
                     },
                     leading: Icon(Icons.school, color: Theme.of(context).colorScheme.primary),
                     title: Text(
