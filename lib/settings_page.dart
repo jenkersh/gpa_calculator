@@ -17,7 +17,7 @@ class SettingsPage extends StatelessWidget {
         title: Text('Edit $title'),
         content: TextField(
           controller: controller,
-          keyboardType: title == 'Previously Completed Credits'
+          keyboardType: title == 'Previous Credits'
               ? TextInputType.number
               : TextInputType.numberWithOptions(decimal: true),
           decoration: InputDecoration(hintText: 'Enter new $title'),
@@ -48,22 +48,22 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           MyTile(
-            title: 'Current GPA',
-            value: gpaProvider.currentGPA.toStringAsFixed(2),
+            title: 'Previous Grade',
+            value: gpaProvider.previousGrade.toStringAsFixed(2),
             onEdit: () => _editValue(
               context,
-              'Current GPA',
-              gpaProvider.currentGPA,
+              'Previous Grade',
+              gpaProvider.previousGrade,
                   (val) => gpaProvider.updateCurrentGPA(val as double), // Explicitly casting
             ),
           ),
           MyTile(
-            title: 'Previously Completed Credits',
-            value: gpaProvider.completedCredits.toString(),
+            title: 'Previous Credits',
+            value: gpaProvider.previousCredits.toString(),
             onEdit: () => _editValue(
               context,
-              'Previously Completed Credits',
-              gpaProvider.completedCredits,
+              'Previous Credits',
+              gpaProvider.previousCredits,
                   (val) => gpaProvider.updateCompletedCredits(val.toInt()),
             ),
           ),

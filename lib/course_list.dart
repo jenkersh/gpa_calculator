@@ -22,6 +22,16 @@ class _CourseListState extends State<CourseList> {
     double totalGradePoints = 0;
     int totalCredits = 0;
 
+    // Include previous credits and grade
+    final gpaProvider = Provider.of<GPAProvider>(context, listen: false);
+    double previousGrade = gpaProvider.previousGrade;
+    int previousCredits = gpaProvider.previousCredits;
+
+    // Add previous credits to total
+    totalGradePoints += previousGrade * previousCredits;
+    totalCredits += previousCredits;
+
+    // Add each course's grade points and credits
     for (var course in courses) {
       double grade = double.tryParse(course['grade'].toString()) ?? 0.0;
       int credits = course['credits'];
@@ -128,13 +138,13 @@ class _CourseListState extends State<CourseList> {
                           TextSpan(
                             text: 'Predicted GPA: ',
                             style: TextStyle(
-                              fontWeight: FontWeight.normal,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           TextSpan(
                             text: '${predictedGPA.toStringAsFixed(2)}',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ],
@@ -151,7 +161,7 @@ class _CourseListState extends State<CourseList> {
               if (isBelowTarget) // Overlay only if GPA is below target
                 Positioned.fill(
                   child: Container(
-                    color: Colors.red.withOpacity(0.3), // Semi-transparent red overlay
+                    color: Theme.of(context).colorScheme.error.withOpacity(.3), // Semi-transparent red overlay
                   ),
                 ),
             ],
@@ -160,9 +170,27 @@ class _CourseListState extends State<CourseList> {
             child: courses.isEmpty
                 ? const Center(child: Text('No courses added. Press the "+" to start!'))
                 : ListView.separated(
-              //padding: const EdgeInsets.only(top: 10),
-              itemCount: courses.length,
+              itemCount: courses.length + 1, // Extra item for "Previous Credits"
               itemBuilder: (context, index) {
+                if (index == courses.length) {
+                  // Last item: "Previous Credits" tile
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                    leading: Icon(
+                      Icons.history,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                    title: Text(
+                      "Previous Credits",
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    ),
+                    subtitle: Text(
+                      "Grade: ${gpaProvider.previousGrade.toStringAsFixed(2)} \u2022 ${gpaProvider.previousCredits} credits",
+                      style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                    ),
+                  );
+                }
+
                 final course = courses[index];
                 return Slidable(
                   endActionPane: ActionPane(
@@ -192,7 +220,9 @@ class _CourseListState extends State<CourseList> {
                       style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Text(
-                      course['completed'] == 'yes' ? 'Grade: ${course['grade']} \u2022 ${course['credits']} credits' : 'Predicted Grade: ${course['grade']} \u2022 ${course['credits']} credits',
+                      course['completed'] == 'yes'
+                          ? 'Grade: ${course['grade']} \u2022 ${course['credits']} credits'
+                          : 'Predicted Grade: ${course['grade']} \u2022 ${course['credits']} credits',
                       style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     ),
                   ),
@@ -208,7 +238,7 @@ class _CourseListState extends State<CourseList> {
                 );
               },
             ),
-          ),
+          )
         ],
       ),
     );
