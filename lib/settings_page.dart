@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:gpa_calculator/my_tile.dart';
 import 'package:gpa_calculator/theme_provider.dart';
 import 'package:gpa_calculator/gpa_provider.dart';
@@ -47,26 +48,54 @@ class SettingsPage extends StatelessWidget {
       appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         children: [
-          MyTile(
-            title: 'Previous Grade',
-            value: gpaProvider.previousGrade.toStringAsFixed(2),
-            onEdit: () => _editValue(
-              context,
-              'Previous Grade',
-              gpaProvider.previousGrade,
-                  (val) => gpaProvider.updateCurrentGPA(val as double), // Explicitly casting
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            title: const Text(
+              'Previous Courses?',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            trailing: SizedBox(
+              width: 75,
+              child: FlutterSwitch(
+                value: gpaProvider.showPreviousCourses,
+                onToggle: (value) {
+                  gpaProvider.togglePreviousCourses(value);
+                },
+                activeText: "Yes",
+                inactiveText: "No",
+                activeColor: Theme.of(context).colorScheme.primary,
+                inactiveColor: Colors.grey,
+                showOnOff: true,
+              ),
             ),
           ),
-          MyTile(
-            title: 'Previous Credits',
-            value: gpaProvider.previousCredits.toString(),
-            onEdit: () => _editValue(
-              context,
-              'Previous Credits',
-              gpaProvider.previousCredits,
-                  (val) => gpaProvider.updateCompletedCredits(val.toInt()),
-            ),
-          ),
+
+          gpaProvider.showPreviousCourses == true ?
+          Column(
+            children: [
+              MyTile(
+                title: 'Previous GPA',
+                value: gpaProvider.previousGrade.toStringAsFixed(2),
+                onEdit: () => _editValue(
+                  context,
+                  'Previous GPA',
+                  gpaProvider.previousGrade,
+                      (val) => gpaProvider.updateCurrentGPA(val as double), // Explicitly casting
+                ),
+              ),
+              MyTile(
+                title: 'Previous Credits',
+                value: gpaProvider.previousCredits.toString(),
+                onEdit: () => _editValue(
+                  context,
+                  'Previous Credits',
+                  gpaProvider.previousCredits,
+                      (val) => gpaProvider.updateCompletedCredits(val.toInt()),
+                ),
+              ),
+            ],
+          ) : SizedBox(),
+
           MyTile(
             title: 'Target GPA',
             value: gpaProvider.targetGPA.toStringAsFixed(2),
@@ -79,19 +108,29 @@ class SettingsPage extends StatelessWidget {
           ),
 
           ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             title: const Text(
               'Dark Mode',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
-            trailing: CupertinoSwitch(
-              activeColor: Theme.of(context).colorScheme.scrim,
-              value: Provider.of<ThemeProvider>(context).isDarkMode,
-              onChanged: (value) => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
+            trailing: SizedBox(
+              width: 75,
+              child: FlutterSwitch(
+                value: Provider.of<ThemeProvider>(context).isDarkMode,
+                onToggle: (value) {
+                  // Toggle dark mode theme
+                  Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+                },
+                activeText: "On", // Text to show when active
+                inactiveText: "Off", // Text to show when inactive
+                activeColor: Theme.of(context).colorScheme.scrim, // Color when the switch is ON
+                inactiveColor: Colors.grey, // Color when the switch is OFF
+                showOnOff: true, // To show "On" and "Off" text
+              ),
             ),
           ),
           ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             title: const Text('Contact Us', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
             trailing: IconButton(
               onPressed: () {},

@@ -167,78 +167,129 @@ class _CourseListState extends State<CourseList> {
             ],
           ),
           Expanded(
-            child: courses.isEmpty
-                ? const Center(child: Text('No courses added. Press the "+" to start!'))
-                : ListView.separated(
-              itemCount: courses.length + 1, // Extra item for "Previous Credits"
-              itemBuilder: (context, index) {
-                if (index == courses.length) {
-                  // Last item: "Previous Credits" tile
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                    leading: Icon(
-                      Icons.history,
-                      color: Theme.of(context).colorScheme.tertiary,
+            child: Consumer<GPAProvider>(
+              builder: (context, gpaProvider, child) {
+                // If no courses and showPreviousCourses is false, display a message
+                if (courses.isEmpty && !gpaProvider.showPreviousCourses) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          'images/backpack.png', // Path to the image
+                          width: 100, // Adjust width as needed
+                          height: 100, // Adjust height as needed
+                        ),
+                        const SizedBox(height: 16), // Add some spacing between the image and text
+                        const Text(
+                          'No courses added. \n Press "Add Course" to start!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
+                        SizedBox(height: 100),
+                      ],
                     ),
-                    title: Text(
-                      "Previous Credits",
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: Text(
-                      "Grade: ${gpaProvider.previousGrade.toStringAsFixed(2)} \u2022 ${gpaProvider.previousCredits} credits",
-                      style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
-                    ),
-                  );
+                  )
+                  ;
                 }
 
-                final course = courses[index];
-                return Slidable(
-                  endActionPane: ActionPane(
-                    motion: const DrawerMotion(),
-                    children: [
-                      SlidableAction(
-                        onPressed: (context) => editCourse(index),
-                        icon: Icons.edit,
-                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                return ListView.separated(
+                  itemCount: courses.length + (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 ? 1 : 0), // Conditionally add the previous credits tile
+                  itemBuilder: (context, index) {
+                    if (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 && index == courses.length) {
+                      // Slidable "Previous Credits" tile
+                      return Slidable(
+                        endActionPane: ActionPane(
+                          motion: const DrawerMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                                );
+                              },
+                              icon: Icons.edit,
+                              backgroundColor: Theme.of(context).colorScheme.tertiary,
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                          leading: Icon(
+                            Icons.history,
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                          title: const Text(
+                            "Previous Credits",
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                          ),
+                          subtitle: Text(
+                            "Grade: ${gpaProvider.previousGrade.toStringAsFixed(2)} \u2022 ${gpaProvider.previousCredits} credits",
+                            style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SettingsPage()),
+                            );
+                          },
+                        ),
+                      );
+                    }
+
+                    final course = courses[index];
+                    return Slidable(
+                      endActionPane: ActionPane(
+                        motion: const DrawerMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (context) => editCourse(index),
+                            icon: Icons.edit,
+                            backgroundColor: Theme.of(context).colorScheme.tertiary,
+                          ),
+                          SlidableAction(
+                            onPressed: (context) => deleteCourse(index),
+                            icon: Icons.delete,
+                            backgroundColor: Theme.of(context).colorScheme.error,
+                          ),
+                        ],
                       ),
-                      SlidableAction(
-                        onPressed: (context) => deleteCourse(index),
-                        icon: Icons.delete,
-                        backgroundColor: Theme.of(context).colorScheme.error,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                        onTap: () => editCourse(index),
+                        leading: Icon(
+                          IconData(course['icon'], fontFamily: 'MaterialIcons'),
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                        title: Text(
+                          course['name'],
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                        ),
+                        subtitle: Text(
+                          course['completed'] == 'yes'
+                              ? 'Grade: ${course['grade']} \u2022 ${course['credits']} credits'
+                              : 'Predicted Grade: ${course['grade']} \u2022 ${course['credits']} credits',
+                          style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                        ),
                       ),
-                    ],
-                  ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                    onTap: () => editCourse(index),
-                    leading: Icon(
-                      IconData(course['icon'], fontFamily: 'MaterialIcons'),
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    title: Text(
-                      course['name'],
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: Text(
-                      course['completed'] == 'yes'
-                          ? 'Grade: ${course['grade']} \u2022 ${course['credits']} credits'
-                          : 'Predicted Grade: ${course['grade']} \u2022 ${course['credits']} credits',
-                      style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
-                    ),
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) {
-                return Divider(
-                  height: 1,
-                  thickness: 1,
-                  color: Theme.of(context).colorScheme.primary,
-                  indent: 20,
-                  endIndent: 20,
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Theme.of(context).colorScheme.primary,
+                      indent: 20,
+                      endIndent: 20,
+                    );
+                  },
                 );
               },
             ),
           )
+
+
         ],
       ),
     );
