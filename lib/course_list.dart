@@ -182,7 +182,7 @@ class _CourseListState extends State<CourseList> {
                         ),
                         const SizedBox(height: 16), // Add some spacing between the image and text
                         const Text(
-                          'No courses added. \n Press "Add Course" to start!',
+                          'No courses added.\n Press "Add Course" to start!',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                         ),
