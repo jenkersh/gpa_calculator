@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:session_buddy/constants.dart';
 
 class MyTextField extends StatefulWidget {
   const MyTextField({
@@ -7,11 +6,13 @@ class MyTextField extends StatefulWidget {
     required this.nameController,
     required this.hintText,
     required this.hintTextColor,
+    required this.keyboardType,
   });
 
   final TextEditingController nameController;
   final String hintText;
   final Color? hintTextColor;
+  final TextInputType? keyboardType; // Explicitly define type
 
   @override
   State<MyTextField> createState() => _MyTextFieldState();
@@ -21,10 +22,8 @@ class _MyTextFieldState extends State<MyTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // decoration: const BoxDecoration(
-      //   boxShadow: [Constants.softShadow],
-      // ),
       child: TextField(
+        keyboardType: widget.keyboardType, // Use widget.keyboardType
         decoration: InputDecoration(
           hintText: widget.hintText,
           hintStyle: TextStyle(color: widget.hintTextColor, fontSize: 13),
@@ -33,14 +32,14 @@ class _MyTextFieldState extends State<MyTextField> {
           enabledBorder: OutlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary, // Keep this color when not focused
+              color: Theme.of(context).colorScheme.secondary,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: const BorderRadius.all(Radius.circular(10)),
             borderSide: BorderSide(
-                color: Theme.of(context).colorScheme.tertiary.withOpacity(.7),
-                width: 2 // Same color when focused
+              color: Theme.of(context).colorScheme.tertiary.withOpacity(.7),
+              width: 2,
             ),
           ),
         ),

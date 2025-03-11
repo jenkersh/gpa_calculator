@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:gpa_calculator/my_textfield.dart';
 import 'package:gpa_calculator/my_tile.dart';
 
 class AddCourseScreen extends StatefulWidget {
@@ -121,11 +122,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       builder: (context) {
         return AlertDialog(
           title: Text(title),
-          content: TextField(
-            controller: controller,
-            keyboardType: editorType == 'grade' ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-            decoration: InputDecoration(hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade'),
-          ),
+          content: MyTextField(nameController: controller, hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade', hintTextColor: Theme.of(context).colorScheme.tertiary, keyboardType: editorType == 'grade' ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text),
+          // content: TextField(
+          //   controller: controller,
+          //   keyboardType: editorType == 'grade' ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+          //   decoration: InputDecoration(hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade'),
+          // ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

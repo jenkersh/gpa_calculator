@@ -14,6 +14,11 @@ ThemeData darkMode = ThemeData(
     surfaceVariant: Colors.transparent,
     outlineVariant: Color(0xFF5dfbaf),
   ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: Colors.red, // Change this to your desired color
+    ),
+  ),
 );
 
 ThemeData lightMode = ThemeData(
@@ -29,5 +34,10 @@ ThemeData lightMode = ThemeData(
     scrim: Color(0xff5dfbaf),
     surfaceVariant: Color(0xff5dfbaf),
     outlineVariant: Color(0xff01b173),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      foregroundColor: Colors.red, // Change this to your desired color
+    ),
   ),
 );
