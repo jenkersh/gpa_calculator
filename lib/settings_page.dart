@@ -14,32 +14,93 @@ class SettingsPage extends StatelessWidget {
 
   void _editValue(BuildContext context, String title, dynamic currentValue, Function(dynamic) onSave) {
     TextEditingController controller = TextEditingController(text: currentValue.toString());
+    String? errorText;
+
+    void validateAndSave(StateSetter setState) {
+      String input = controller.text.trim();
+      double? inputValue = double.tryParse(input);
+
+      if (input.isEmpty) {
+        setState(() => errorText = "$title can't be empty.");
+        return;
+      }
+
+      if (inputValue == null) {
+        setState(() => errorText = "Please enter a valid number.");
+      } else if (title == 'Previous Credits' || title == 'Completed Credits') {
+        if (inputValue < 0.5 || inputValue > 1000 || (inputValue * 10) % 5 != 0) {
+          setState(() => errorText = "0.5 increments up to 1000 allowed.");
+        } else {
+          onSave(inputValue);
+          Navigator.pop(context);
+          return;
+        }
+      } else if (title == 'Previous GPA' || title == 'Target GPA') {
+        if (inputValue < 0.00 || inputValue > 4.00) {
+          setState(() => errorText = "GPA must be between 0.00 and 4.00.");
+        } else {
+          // Round to two decimal places
+          inputValue = double.parse(inputValue.toStringAsFixed(2));
+          onSave(inputValue);
+          Navigator.pop(context);
+          return;
+        }
+      }
+
+      // Force dialog rebuild to show error
+      setState(() {});
+    }
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Edit $title'),
-        content: MyTextField(nameController: controller, hintText: 'Enter new $title', hintTextColor: Theme.of(context).colorScheme.tertiary, keyboardType: title == 'Previous Credits' ? TextInputType.number : TextInputType.numberWithOptions(decimal: true)),
-        // content: TextField(
-        //   controller: controller,
-        //   keyboardType: title == 'Previous Credits'
-        //       ? TextInputType.number
-        //       : TextInputType.numberWithOptions(decimal: true),
-        //   decoration: InputDecoration(hintText: 'Enter new $title'),
-        // ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              onSave(double.tryParse(controller.text) ?? currentValue);
-              Navigator.pop(context);
-            },
-            child: const Text('Save'),
-          ),
-        ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text('Edit $title'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    hintText: 'Enter new $title',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                    errorText: errorText,
+                    suffixIcon: controller.text.isNotEmpty
+                        ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          controller.clear();
+                          errorText = null; // Remove any previous errors
+                        });
+                      },
+                    )
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      errorText = null; // Reset error text when the user starts typing
+                    });
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  validateAndSave(setState);
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -130,7 +191,7 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            contentPadding: const EdgeInsets.only(left: 15, right: 15, top: 10),
             title: const Text(
               'Dark Mode',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
@@ -152,7 +213,7 @@ class SettingsPage extends StatelessWidget {
             ),
           ),
           ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            contentPadding: const EdgeInsets.only(left: 15, right: 15, bottom: 10, top: 5),
             title: const Text(
               'Previous Courses?',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

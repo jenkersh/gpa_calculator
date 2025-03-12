@@ -51,22 +51,28 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   int _courseIcon = 0;
 
   @override
+  @override
+  @override
   void initState() {
     super.initState();
+
     if (widget.isEdit && widget.courseData != null) {
-      // Populate the fields with existing data for editing
+      // Populate fields with existing data when editing
       _nameController.text = widget.courseData!['name'];
       _gradeController.text = widget.courseData!['grade'];
-      _selectedCredits = widget.courseData!['credits'] ?? 3;  // Populate the credits from the existing data
+      _selectedCredits = widget.courseData!['credits'] ?? 3;
       _courseIcon = widget.courseData!['icon'];
 
-      // Convert the icon code point back to the IconData and set _selectedIcon
-      _selectedIcon = IconData(
-        _courseIcon,
-        fontFamily: 'MaterialIcons',
-      );
+      // Convert icon code point back to IconData
+      _selectedIcon = IconData(_courseIcon, fontFamily: 'MaterialIcons');
+    } else {
+      // Default values for new courses
+      _nameController.text = "My Course";
+      _gradeController.text = "3.0"; // Set default grade to 3.0
     }
   }
+
+
 
   @override
   void dispose() {
@@ -105,44 +111,113 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     );
   }
 
-  void _showEditor({required String editorType}) {
+  void _showEditor({required String editorType, required Function(String) onSave}) {
     TextEditingController controller;
     String title;
+    String? errorText;
+    String originalValue; // Store original value
 
     if (editorType == 'name') {
       controller = _nameController;
       title = "Edit Course Name";
+      originalValue = controller.text;
     } else {
       controller = _gradeController;
       title = "Edit Grade";
+      originalValue = controller.text;
+    }
+
+    void validateAndSave(StateSetter setState) {
+      String input = controller.text.trim();
+
+      if (editorType == 'name') {
+        if (input.isEmpty) {
+          setState(() => errorText = "Name can't be empty.");
+          return;
+        } else if (input.length > 30) {
+          setState(() => errorText = "Max 30 chars.");
+          return;
+        }
+      } else if (editorType == 'grade') {
+        double? grade = double.tryParse(input);
+        if (grade == null) {
+          setState(() => errorText = "Invalid number.");
+          return;
+        } else if (grade < 0.00 || grade > 4.00) {
+          setState(() => errorText = "Grade 0-4 only.");
+          return;
+        } else {
+          grade = double.parse(grade.toStringAsFixed(2));
+          setState(() {
+            controller.text = grade.toString();
+            errorText = null; // Clear error if valid
+          });
+        }
+      }
+
+      // Only save if there is no error
+      if (errorText == null) {
+        onSave(controller.text);
+        Navigator.pop(context);
+      }
     }
 
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(title),
-          content: MyTextField(nameController: controller, hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade', hintTextColor: Theme.of(context).colorScheme.tertiary, keyboardType: editorType == 'grade' ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text),
-          // content: TextField(
-          //   controller: controller,
-          //   keyboardType: editorType == 'grade' ? TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
-          //   decoration: InputDecoration(hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade'),
-          // ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text(title),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  keyboardType: editorType == 'grade'
+                      ? const TextInputType.numberWithOptions(decimal: true)
+                      : TextInputType.text,
+                  decoration: InputDecoration(
+                    hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade',
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                    errorText: errorText,
+                    suffixIcon: controller.text.isNotEmpty
+                        ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          controller.clear();
+                          errorText = null; // Remove any previous errors
+                        });
+                      },
+                    )
+                        : null,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      errorText = null; // Reset error text when the user starts typing
+                    });
+                  },
+                ),
+              ],
             ),
-            TextButton(
-              onPressed: () {
-                setState(() {});
-                Navigator.pop(context);
-              },
-              child: const Text("Save"),
-            ),
-          ],
-        );
-      },
+            actions: [
+              TextButton(
+                onPressed: () {
+                  controller.text = originalValue; // Restore original value
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () {
+                  validateAndSave(setState);
+                },
+                child: const Text("Save"),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -185,14 +260,15 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   void _saveCourse() {
     final newCourse = {
       'completed': _isCompleted ? 'yes' : 'no',
-      'name': _nameController.text,
-      'grade': _gradeController.text,
-      'icon': _selectedIcon.codePoint, // Save the icon as a codePoint
+      'name': _nameController.text.isEmpty ? "My Course" : _nameController.text,
+      'grade': _gradeController.text.isEmpty ? "3.0" : _gradeController.text,
+      'icon': _selectedIcon.codePoint,
       'credits': _selectedCredits,
     };
 
     Navigator.pop(context, newCourse);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -220,14 +296,30 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
             ),
             MyTile(
               title: "Course Name",
-              value: _nameController.text.isEmpty ? "My Course" : _nameController.text,
-              onEdit: () => _showEditor(editorType: 'name'),
+              value: _nameController.text,
+              onEdit: () => _showEditor(
+                editorType: 'name',
+                onSave: (newName) {
+                  setState(() {
+                    _nameController.text = newName.isEmpty ? "My Course" : newName;
+                  });
+                },
+              ),
             ),
+
             MyTile(
               title: _isCompleted ? "Grade" : "Predicted Grade",
-              value: _gradeController.text.isEmpty ? "0.0" : _gradeController.text,
-              onEdit: () => _showEditor(editorType: 'grade'),
+              value: _gradeController.text.isEmpty ? "3.0" : _gradeController.text,
+              onEdit: () => _showEditor(
+                editorType: 'grade',
+                onSave: (newGrade) {
+                  setState(() {
+                    _gradeController.text = newGrade.isEmpty ? "3.0" : newGrade;
+                  });
+                },
+              ),
             ),
+
             MyTile(
               title: "Credits",
               value: _selectedCredits.toString(),
