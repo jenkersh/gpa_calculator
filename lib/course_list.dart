@@ -18,7 +18,7 @@ class CourseList extends StatefulWidget {
 
 class _CourseListState extends State<CourseList> {
   final List<Map<String, dynamic>> courses = [
-    {'completed': 'yes', 'name': 'Mathematics', 'grade': '2.71', 'icon': 2, 'credits': 4},
+    //{'completed': 'yes', 'name': 'Mathematics', 'grade': '2.71', 'icon': 2, 'credits': 4},
   ];
 
   @override
@@ -114,20 +114,20 @@ class _CourseListState extends State<CourseList> {
     final bool isBelowTarget = predictedGPA < targetGPA;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SettingsPage()),
-              );
-            },
-          ),
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).colorScheme.surface,
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.settings),
+      //       onPressed: () {
+      //         Navigator.push(
+      //           context,
+      //           MaterialPageRoute(builder: (context) => const SettingsPage()),
+      //         );
+      //       },
+      //     ),
+      //   ],
+      // ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: Padding(
         padding: const EdgeInsets.all(20),
@@ -153,6 +153,10 @@ class _CourseListState extends State<CourseList> {
       ),
       body: Column(
         children: [
+          Container(
+            height: 30,
+            color: Theme.of(context).colorScheme.surface,
+          ),
           Stack(
             children: [
               Container(
@@ -198,6 +202,19 @@ class _CourseListState extends State<CourseList> {
                     color: Theme.of(context).colorScheme.error.withOpacity(.3), // Semi-transparent red overlay
                   ),
                 ),
+              Positioned(
+                right: 5,
+                top: 5,
+                child: IconButton(
+                  icon: const Icon(Icons.settings, size: 25),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SettingsPage()),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
           Expanded(
@@ -228,6 +245,7 @@ class _CourseListState extends State<CourseList> {
                 }
 
                 return ListView.separated(
+                  padding: EdgeInsets.only(top: 8),
                   itemCount: courses.length + (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 ? 1 : 0), // Conditionally add the previous credits tile
                   itemBuilder: (context, index) {
                     if (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 && index == courses.length) {
