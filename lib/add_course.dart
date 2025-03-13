@@ -51,27 +51,23 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   int _courseIcon = 0;
 
   @override
-  @override
-  @override
   void initState() {
     super.initState();
 
     if (widget.isEdit && widget.courseData != null) {
-      // Populate fields with existing data when editing
       _nameController.text = widget.courseData!['name'];
-      _gradeController.text = widget.courseData!['grade'];
       _selectedCredits = widget.courseData!['credits'] ?? 3;
       _courseIcon = widget.courseData!['icon'];
-
-      // Convert icon code point back to IconData
       _selectedIcon = IconData(_courseIcon, fontFamily: 'MaterialIcons');
+
+      // Ensure grade is stored with 2 decimal places
+      double grade = double.tryParse(widget.courseData!['grade'].toString()) ?? 3.00;
+      _gradeController.text = grade.toStringAsFixed(2);
     } else {
-      // Default values for new courses
       _nameController.text = "My Course";
-      _gradeController.text = "3.0"; // Set default grade to 3.0
+      _gradeController.text = "3.00"; // Default grade with two decimals
     }
   }
-
 
 
   @override
@@ -144,12 +140,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           setState(() => errorText = "Invalid number.");
           return;
         } else if (grade < 0.00 || grade > 4.00) {
-          setState(() => errorText = "Grade 0-4 only.");
+          setState(() => errorText = "Grade must be between 0.0 and 4.0.");
           return;
         } else {
           grade = double.parse(grade.toStringAsFixed(2));
           setState(() {
-            controller.text = grade.toString();
+            controller.text = grade!.toStringAsFixed(2);
             errorText = null; // Clear error if valid
           });
         }
@@ -177,6 +173,33 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                       ? const TextInputType.numberWithOptions(decimal: true)
                       : TextInputType.text,
                   decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.tertiary.withOpacity(.7),
+                        width: 2,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(  // Maintains full outline in error state
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        width: 2,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(  // Maintains full outline when focused with an error
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        width: 2,
+                      ),
+                    ),
                     hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade',
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     errorText: errorText,
@@ -261,13 +284,16 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     final newCourse = {
       'completed': _isCompleted ? 'yes' : 'no',
       'name': _nameController.text.isEmpty ? "My Course" : _nameController.text,
-      'grade': _gradeController.text.isEmpty ? "3.0" : _gradeController.text,
+      'grade': _gradeController.text.isEmpty
+          ? "3.00"
+          : double.parse(_gradeController.text).toStringAsFixed(2), // Ensure format
       'icon': _selectedIcon.codePoint,
       'credits': _selectedCredits,
     };
 
     Navigator.pop(context, newCourse);
   }
+
 
 
   @override
@@ -309,12 +335,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
 
             MyTile(
               title: _isCompleted ? "Grade" : "Predicted Grade",
-              value: _gradeController.text.isEmpty ? "3.0" : _gradeController.text,
+              value: _gradeController.text.isEmpty ? "3.00" : _gradeController.text,
               onEdit: () => _showEditor(
                 editorType: 'grade',
                 onSave: (newGrade) {
                   setState(() {
-                    _gradeController.text = newGrade.isEmpty ? "3.0" : newGrade;
+                    _gradeController.text = newGrade.isEmpty ? "3.00" : newGrade;
                   });
                 },
               ),

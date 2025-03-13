@@ -37,7 +37,7 @@ class SettingsPage extends StatelessWidget {
         }
       } else if (title == 'Previous GPA' || title == 'Target GPA') {
         if (inputValue < 0.00 || inputValue > 4.00) {
-          setState(() => errorText = "GPA must be between 0.00 and 4.00.");
+          setState(() => errorText = "GPA must be between 0.0 and 4.0.");
         } else {
           // Round to two decimal places
           inputValue = double.parse(inputValue.toStringAsFixed(2));
@@ -64,6 +64,33 @@ class SettingsPage extends StatelessWidget {
                   controller: controller,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.tertiary.withOpacity(.7),
+                        width: 2,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(  // Ensures full outline when error occurs
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        width: 2,  // Keeps the thickness the same
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(  // Ensures full outline remains on focus
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        width: 2,
+                      ),
+                    ),
                     hintText: 'Enter new $title',
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     errorText: errorText,
@@ -85,6 +112,7 @@ class SettingsPage extends StatelessWidget {
                     });
                   },
                 ),
+
               ],
             ),
             actions: [

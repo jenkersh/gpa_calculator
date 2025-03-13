@@ -13,11 +13,14 @@ class GPAProvider extends ChangeNotifier {
   bool get showPreviousCourses => _showPreviousCourses;
 
   GPAProvider() {
-    _loadPreferences();  // Load saved preferences when the provider is initialized
+    _loadPreferences(); // Load saved preferences when the provider initializes
   }
 
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
+    _previousGrade = prefs.getDouble('previousGrade') ?? 0.0;
+    _previousCredits = prefs.getInt('previousCredits') ?? 0;
+    _targetGPA = prefs.getDouble('targetGPA') ?? 0.0;
     _showPreviousCourses = prefs.getBool('showPreviousCourses') ?? false;
     notifyListeners();
   }
@@ -29,18 +32,24 @@ class GPAProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateCurrentGPA(double grade) {
+  Future<void> updateCurrentGPA(double grade) async {
+    final prefs = await SharedPreferences.getInstance();
     _previousGrade = grade;
+    await prefs.setDouble('previousGrade', grade);
     notifyListeners();
   }
 
-  void updateCompletedCredits(int credits) {
+  Future<void> updateCompletedCredits(int credits) async {
+    final prefs = await SharedPreferences.getInstance();
     _previousCredits = credits;
+    await prefs.setInt('previousCredits', credits);
     notifyListeners();
   }
 
-  void updateTargetGPA(double gpa) {
+  Future<void> updateTargetGPA(double gpa) async {
+    final prefs = await SharedPreferences.getInstance();
     _targetGPA = gpa;
+    await prefs.setDouble('targetGPA', gpa);
     notifyListeners();
   }
 }

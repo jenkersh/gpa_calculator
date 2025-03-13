@@ -5,6 +5,9 @@ import 'package:gpa_calculator/add_course.dart';
 import 'package:gpa_calculator/settings_page.dart';
 import 'package:gpa_calculator/gpa_provider.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CourseList extends StatefulWidget {
   const CourseList({super.key});
@@ -18,18 +21,40 @@ class _CourseListState extends State<CourseList> {
     {'completed': 'yes', 'name': 'Mathematics', 'grade': '2.71', 'icon': 2, 'credits': 4},
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _loadCourses();
+  }
+
+  void _loadCourses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? coursesJson = prefs.getString('courses');
+
+    if (coursesJson != null) {
+      setState(() {
+        courses.clear(); // Clear existing list before adding new data
+        courses.addAll(List<Map<String, dynamic>>.from(json.decode(coursesJson)));
+      });
+    }
+  }
+
+
+
   double get predictedGPA {
     double totalGradePoints = 0;
     int totalCredits = 0;
 
-    // Include previous credits and grade
     final gpaProvider = Provider.of<GPAProvider>(context, listen: false);
-    double previousGrade = gpaProvider.previousGrade;
-    int previousCredits = gpaProvider.previousCredits;
 
-    // Add previous credits to total
-    totalGradePoints += previousGrade * previousCredits;
-    totalCredits += previousCredits;
+    // Include previous credits only if showPreviousCourses is true
+    if (gpaProvider.showPreviousCourses) {
+      double previousGrade = gpaProvider.previousGrade;
+      int previousCredits = gpaProvider.previousCredits;
+
+      totalGradePoints += previousGrade * previousCredits;
+      totalCredits += previousCredits;
+    }
 
     // Add each course's grade points and credits
     for (var course in courses) {
@@ -43,15 +68,22 @@ class _CourseListState extends State<CourseList> {
     return totalCredits > 0 ? totalGradePoints / totalCredits : 0.0;
   }
 
+  void _saveCourses() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('courses', json.encode(courses));
+  }
+
   void addCourse(Map<String, dynamic> course) {
     setState(() {
       courses.add(course);
+      _saveCourses(); // Save after adding
     });
   }
 
   void deleteCourse(int index) {
     setState(() {
       courses.removeAt(index);
+      _saveCourses(); // Save after deleting
     });
   }
 
@@ -60,18 +92,20 @@ class _CourseListState extends State<CourseList> {
       context,
       MaterialPageRoute(
         builder: (context) => AddCourseScreen(
-          courseData: courses[index],  // Pass the existing course data
-          isEdit: true,  // Flag to indicate edit mode
+          courseData: courses[index],
+          isEdit: true,
         ),
       ),
     ).then((updatedCourse) {
       if (updatedCourse != null) {
         setState(() {
-          courses[index] = updatedCourse;  // Update the course in the list
+          courses[index] = updatedCourse;
+          _saveCourses(); // Save after editing
         });
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
