@@ -245,7 +245,7 @@ class _CourseListState extends State<CourseList> {
                 }
 
                 return ListView.separated(
-                  padding: EdgeInsets.only(top: 8),
+                  padding: EdgeInsets.only(top: 8, bottom: 100),
                   itemCount: courses.length + (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 ? 1 : 0), // Conditionally add the previous credits tile
                   itemBuilder: (context, index) {
                     if (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 && index == courses.length) {
