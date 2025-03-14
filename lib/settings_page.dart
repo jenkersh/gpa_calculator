@@ -216,108 +216,135 @@ class SettingsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
+      body: Column(
         children: [
-          ListTile(
-            contentPadding: const EdgeInsets.only(left: 15, right: 15, top: 10),
-            title: const Text(
-              'Dark Mode',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            trailing: SizedBox(
-              width: 75,
-              child: FlutterSwitch(
-                value: Provider.of<ThemeProvider>(context).isDarkMode,
-                onToggle: (value) {
-                  // Toggle dark mode theme
-                  Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-                },
-                activeText: "On", // Text to show when active
-                inactiveText: "Off", // Text to show when inactive
-                activeColor: Theme.of(context).colorScheme.scrim, // Color when the switch is ON
-                inactiveColor: Colors.grey, // Color when the switch is OFF
-                showOnOff: true, // To show "On" and "Off" text
-              ),
-            ),
-          ),
-          ListTile(
-            contentPadding: const EdgeInsets.only(left: 15, right: 15, bottom: 10, top: 5),
-            title: const Text(
-              'Previous Courses?',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            trailing: SizedBox(
-              width: 75,
-              child: FlutterSwitch(
-                value: gpaProvider.showPreviousCourses,
-                onToggle: (value) {
-                  gpaProvider.togglePreviousCourses(value);
-                },
-                activeText: "Yes",
-                inactiveText: "No",
-                activeColor: Theme.of(context).colorScheme.primary,
-                inactiveColor: Colors.grey,
-                showOnOff: true,
-              ),
-            ),
-          ),
-
-          gpaProvider.showPreviousCourses == true ?
-          Column(
-            children: [
-              MyTile(
-                title: 'Previous GPA',
-                value: gpaProvider.previousGrade.toStringAsFixed(2),
-                onEdit: () => _editValue(
-                  context,
-                  'Previous GPA',
-                  gpaProvider.previousGrade,
-                      (val) => gpaProvider.updateCurrentGPA(val as double), // Explicitly casting
+          Expanded(
+            child: ListView(
+              children: [
+                ListTile(
+                  contentPadding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+                  title: const Text(
+                    'Dark Mode',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  trailing: SizedBox(
+                    width: 75,
+                    child: FlutterSwitch(
+                      width: 200,
+                      value: Provider.of<ThemeProvider>(context).isDarkMode,
+                      onToggle: (value) {
+                        Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+                      },
+                      activeText: "On",
+                      inactiveText: "Off",
+                      activeColor: Theme.of(context).colorScheme.secondary,
+                      inactiveColor: Theme.of(context).colorScheme.primary,
+                      activeTextColor: Theme.of(context).colorScheme.inversePrimary,
+                      inactiveTextColor: Theme.of(context).colorScheme.tertiaryFixed,
+                      showOnOff: true,
+                    ),
+                  ),
                 ),
-              ),
-              MyTile(
-                title: 'Previous Credits',
-                value: gpaProvider.previousCredits.toString(),
-                onEdit: () => _editValue(
-                  context,
-                  'Previous Credits',
-                  gpaProvider.previousCredits,
-                      (val) => gpaProvider.updateCompletedCredits(val.toInt()),
+                ListTile(
+                  contentPadding: const EdgeInsets.only(left: 15, right: 15, bottom: 10, top: 5),
+                  title: const Text(
+                    'Previous Courses?',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  trailing: SizedBox(
+                    width: 75,
+                    child: FlutterSwitch(
+                      width: 200,
+                      value: gpaProvider.showPreviousCourses,
+                      onToggle: (value) {
+                        gpaProvider.togglePreviousCourses(value);
+                      },
+                      activeText: "Yes",
+                      inactiveText: "No",
+                      activeColor: Theme.of(context).colorScheme.secondary,
+                      inactiveColor: Theme.of(context).colorScheme.primary,
+                      activeTextColor: Theme.of(context).colorScheme.inversePrimary,
+                      inactiveTextColor: Theme.of(context).colorScheme.tertiaryFixed,
+                      showOnOff: true,
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ) : SizedBox(),
 
-          MyTile(
-            title: 'Target GPA',
-            value: gpaProvider.targetGPA.toStringAsFixed(2),
-            onEdit: () => _editValue(
-              context,
-              'Target GPA',
-              gpaProvider.targetGPA,
-                  (val) => gpaProvider.updateTargetGPA(val as double), // Explicitly casting
+                if (gpaProvider.showPreviousCourses)
+                  Column(
+                    children: [
+                      MyTile(
+                        title: 'Previous GPA',
+                        value: gpaProvider.previousGrade.toStringAsFixed(2),
+                        onEdit: () => _editValue(
+                          context,
+                          'Previous GPA',
+                          gpaProvider.previousGrade,
+                              (val) => gpaProvider.updateCurrentGPA(val as double),
+                        ),
+                      ),
+                      MyTile(
+                        title: 'Previous Credits',
+                        value: gpaProvider.previousCredits.toString(),
+                        onEdit: () => _editValue(
+                          context,
+                          'Previous Credits',
+                          gpaProvider.previousCredits,
+                              (val) => gpaProvider.updateCompletedCredits(val.toInt()),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                MyTile(
+                  title: 'Target GPA',
+                  value: gpaProvider.targetGPA.toStringAsFixed(2),
+                  onEdit: () => _editValue(
+                    context,
+                    'Target GPA',
+                    gpaProvider.targetGPA,
+                        (val) => gpaProvider.updateTargetGPA(val as double),
+                  ),
+                ),
+
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  title: const Text('Contact Us', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        _showEmailDialog(context);
+                      },
+                      icon: Icon(Icons.open_in_new),
+                    ),
+                  ),
+                  onTap: () {
+                    _showEmailDialog(context);
+                  },
+                ),
+              ],
             ),
           ),
-
-
-          ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            title: const Text('Contact Us', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-            trailing: Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: IconButton(
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.scrim,
+                  minimumSize: const Size(double.infinity, 50),
+                  elevation: 5,
+                ),
                 onPressed: () {
-                  _showEmailDialog(context);
+                  Navigator.pop(context);
                 },
-                icon: Icon(Icons.open_in_new),
+                child: Text('Save Changes', style: TextStyle(color: Colors.black, fontSize: 18)),
               ),
             ),
-            onTap: () {
-              _showEmailDialog(context);
-            },
           ),
         ],
       ),
     );
+
   }
 }

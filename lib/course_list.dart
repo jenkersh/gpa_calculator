@@ -144,8 +144,8 @@ class _CourseListState extends State<CourseList> {
               addCourse(newCourse);
             }
           },
-          icon: Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
-          label: const Text("Add Course"),
+          icon: Icon(Icons.add, color: Colors.black),
+          label: Text("Add Course", style: TextStyle(color: Colors.black)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),
@@ -170,7 +170,7 @@ class _CourseListState extends State<CourseList> {
                       text: TextSpan(
                         style: TextStyle(
                           fontSize: 24,
-                          color: isBelowTarget ? Colors.red : Theme.of(context).colorScheme.inversePrimary,
+                          color: isBelowTarget ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.inversePrimary,
                         ),
                         children: [
                           TextSpan(
@@ -199,7 +199,7 @@ class _CourseListState extends State<CourseList> {
               if (isBelowTarget) // Overlay only if GPA is below target
                 Positioned.fill(
                   child: Container(
-                    color: Theme.of(context).colorScheme.error.withOpacity(.3), // Semi-transparent red overlay
+                    color: Theme.of(context).colorScheme.error.withOpacity(.2), // Semi-transparent red overlay
                   ),
                 ),
               Positioned(
@@ -245,7 +245,7 @@ class _CourseListState extends State<CourseList> {
                 }
 
                 return ListView.separated(
-                  padding: EdgeInsets.only(top: 8, bottom: 100),
+                  padding: EdgeInsets.only(bottom: 100),
                   itemCount: courses.length + (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 ? 1 : 0), // Conditionally add the previous credits tile
                   itemBuilder: (context, index) {
                     if (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 && index == courses.length) {
@@ -270,7 +270,7 @@ class _CourseListState extends State<CourseList> {
                           contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                           leading: Icon(
                             Icons.history,
-                            color: Theme.of(context).colorScheme.tertiary,
+                            color: Theme.of(context).colorScheme.tertiaryFixed,
                           ),
                           title: const Text(
                             "Previous Credits",
@@ -278,7 +278,7 @@ class _CourseListState extends State<CourseList> {
                           ),
                           subtitle: Text(
                             "Grade: ${gpaProvider.previousGrade.toStringAsFixed(2)} \u2022 ${gpaProvider.previousCredits} credits",
-                            style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                            style: TextStyle(color: Theme.of(context).colorScheme.tertiaryFixed),
                           ),
                           onTap: () {
                             Navigator.push(
@@ -298,7 +298,7 @@ class _CourseListState extends State<CourseList> {
                           SlidableAction(
                             onPressed: (context) => editCourse(index),
                             icon: Icons.edit,
-                            backgroundColor: Theme.of(context).colorScheme.tertiary,
+                            backgroundColor: Theme.of(context).colorScheme.secondary,
                           ),
                           SlidableAction(
                             onPressed: (context) => deleteCourse(index),
@@ -312,7 +312,7 @@ class _CourseListState extends State<CourseList> {
                         onTap: () => editCourse(index),
                         leading: Icon(
                           IconData(course['icon'], fontFamily: 'MaterialIcons'),
-                          color: Theme.of(context).colorScheme.tertiary,
+                          color: Theme.of(context).colorScheme.tertiaryFixed,
                         ),
                         title: Text(
                           course['name'],
@@ -322,7 +322,7 @@ class _CourseListState extends State<CourseList> {
                           course['completed'] == 'yes'
                               ? 'Grade: ${course['grade']} \u2022 ${course['credits']} credits'
                               : 'Predicted Grade: ${course['grade']} \u2022 ${course['credits']} credits',
-                          style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                          style: TextStyle(color: Theme.of(context).colorScheme.tertiaryFixed),
                         ),
                       ),
                     );

@@ -186,20 +186,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                         width: 2,
                       ),
                     ),
-                    errorBorder: OutlineInputBorder(  // Maintains full outline in error state
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      borderSide: const BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(  // Maintains full outline when focused with an error
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      borderSide: const BorderSide(
-                        color: Colors.red,
-                        width: 2,
-                      ),
-                    ),
                     hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade',
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     errorText: errorText,
@@ -310,12 +296,15 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               trailing: SizedBox(
                 width: 75, // Constraint width to avoid excessive space usage
                 child: FlutterSwitch(
+                  width: 200,
                   value: _isCompleted,
                   onToggle: (value) => setState(() => _isCompleted = value),
                   activeText: "Yes",
                   inactiveText: "No",
-                  activeColor: Theme.of(context).colorScheme.primary,
-                  inactiveColor: Colors.grey,
+                  activeColor: Theme.of(context).colorScheme.secondary, // Color when the switch is ON
+                  inactiveColor: Theme.of(context).colorScheme.primary,
+                  activeTextColor: Theme.of(context).colorScheme.inversePrimary,
+                  inactiveTextColor: Theme.of(context).colorScheme.tertiaryFixed,
                   showOnOff: true,
                 ),
               ),
@@ -363,6 +352,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.scrim,
                   minimumSize: const Size(double.infinity, 50),
+                  elevation: 5,
                 ),
                 onPressed: _saveCourse,
                 child: Text(widget.isEdit ? 'Save Changes' : 'Add Course', style: TextStyle(color: Colors.black, fontSize: 18)),

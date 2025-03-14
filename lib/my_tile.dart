@@ -29,7 +29,7 @@ class MyTile extends StatelessWidget {
               child: value is String
                   ? Text(
                 value,
-                style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.tertiary),
+                style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.tertiaryFixed),
               )
                   : value, // Use the widget directly if not a string
             ),
