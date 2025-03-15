@@ -98,7 +98,10 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               ),
             ),
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                Navigator.pop(context);
+              },
               child: const Text("Done"),
             )
           ],
@@ -193,6 +196,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                         ? IconButton(
                       icon: const Icon(Icons.clear),
                       onPressed: () {
+                        HapticFeedback.selectionClick();
                         setState(() {
                           controller.clear();
                           errorText = null; // Remove any previous errors
@@ -212,6 +216,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
             actions: [
               TextButton(
                 onPressed: () {
+                  HapticFeedback.lightImpact();
                   controller.text = originalValue; // Restore original value
                   Navigator.pop(context);
                 },
@@ -219,6 +224,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               ),
               TextButton(
                 onPressed: () {
+                  HapticFeedback.lightImpact();
                   validateAndSave(setState);
                 },
                 child: const Text("Save"),
@@ -253,6 +259,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                 IconButton(
                   icon: Icon(icon, size: 30, color: Theme.of(context).colorScheme.tertiary),
                   onPressed: () {
+                    HapticFeedback.lightImpact();
                     setState(() => _selectedIcon = icon);
                     Navigator.pop(context);
                   },
@@ -267,6 +274,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   }
 
   void _saveCourse() {
+    HapticFeedback.lightImpact();
     final newCourse = {
       'completed': _isCompleted ? 'yes' : 'no',
       'name': _nameController.text.isEmpty ? "My Course" : _nameController.text,

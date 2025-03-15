@@ -77,14 +77,16 @@ class SettingsPage extends StatelessWidget {
                         width: 2,
                       ),
                     ),
-                    errorBorder: OutlineInputBorder(  // Ensures full outline when error occurs
+                    errorBorder: OutlineInputBorder(
+                      // Ensures full outline when error occurs
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                       borderSide: const BorderSide(
                         color: Colors.red,
-                        width: 2,  // Keeps the thickness the same
+                        width: 2, // Keeps the thickness the same
                       ),
                     ),
-                    focusedErrorBorder: OutlineInputBorder(  // Ensures full outline remains on focus
+                    focusedErrorBorder: OutlineInputBorder(
+                      // Ensures full outline remains on focus
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                       borderSide: const BorderSide(
                         color: Colors.red,
@@ -96,14 +98,15 @@ class SettingsPage extends StatelessWidget {
                     errorText: errorText,
                     suffixIcon: controller.text.isNotEmpty
                         ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        setState(() {
-                          controller.clear();
-                          errorText = null; // Remove any previous errors
-                        });
-                      },
-                    )
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              setState(() {
+                                controller.clear();
+                                errorText = null; // Remove any previous errors
+                              });
+                            },
+                          )
                         : null,
                   ),
                   onChanged: (value) {
@@ -112,16 +115,19 @@ class SettingsPage extends StatelessWidget {
                     });
                   },
                 ),
-
               ],
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.pop(context);
+                },
                 child: const Text('Cancel'),
               ),
               TextButton(
                 onPressed: () {
+                  HapticFeedback.lightImpact();
                   validateAndSave(setState);
                 },
                 child: const Text('Save'),
@@ -269,7 +275,6 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 if (gpaProvider.showPreviousCourses)
                   Column(
                     children: [
@@ -280,7 +285,7 @@ class SettingsPage extends StatelessWidget {
                           context,
                           'Previous GPA',
                           gpaProvider.previousGrade,
-                              (val) => gpaProvider.updateCurrentGPA(val as double),
+                          (val) => gpaProvider.updateCurrentGPA(val as double),
                         ),
                       ),
                       MyTile(
@@ -290,12 +295,11 @@ class SettingsPage extends StatelessWidget {
                           context,
                           'Previous Credits',
                           gpaProvider.previousCredits,
-                              (val) => gpaProvider.updateCompletedCredits(val.toInt()),
+                          (val) => gpaProvider.updateCompletedCredits(val.toInt()),
                         ),
                       ),
                     ],
                   ),
-
                 MyTile(
                   title: 'Target GPA',
                   value: gpaProvider.targetGPA.toStringAsFixed(2),
@@ -303,10 +307,9 @@ class SettingsPage extends StatelessWidget {
                     context,
                     'Target GPA',
                     gpaProvider.targetGPA,
-                        (val) => gpaProvider.updateTargetGPA(val as double),
+                    (val) => gpaProvider.updateTargetGPA(val as double),
                   ),
                 ),
-
                 ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   title: const Text('Contact Us', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
@@ -314,12 +317,14 @@ class SettingsPage extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 10),
                     child: IconButton(
                       onPressed: () {
+                        HapticFeedback.lightImpact();
                         _showEmailDialog(context);
                       },
                       icon: Icon(Icons.open_in_new),
                     ),
                   ),
                   onTap: () {
+                    HapticFeedback.lightImpact();
                     _showEmailDialog(context);
                   },
                 ),
@@ -336,6 +341,7 @@ class SettingsPage extends StatelessWidget {
                   elevation: 5,
                 ),
                 onPressed: () {
+                  HapticFeedback.lightImpact();
                   Navigator.pop(context);
                 },
                 child: Text('Save Changes', style: TextStyle(color: Colors.black, fontSize: 18)),
@@ -345,6 +351,5 @@ class SettingsPage extends StatelessWidget {
         ],
       ),
     );
-
   }
 }

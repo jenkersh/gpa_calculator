@@ -81,6 +81,7 @@ class _CourseListState extends State<CourseList> {
   }
 
   void deleteCourse(int index) {
+    HapticFeedback.lightImpact();
     setState(() {
       courses.removeAt(index);
       _saveCourses(); // Save after deleting
@@ -88,6 +89,7 @@ class _CourseListState extends State<CourseList> {
   }
 
   void editCourse(int index) {
+    HapticFeedback.lightImpact();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -135,6 +137,7 @@ class _CourseListState extends State<CourseList> {
           backgroundColor: Theme.of(context).colorScheme.scrim,
           foregroundColor: Theme.of(context).colorScheme.surface,
           onPressed: () async {
+            HapticFeedback.lightImpact();
             final newCourse = await Navigator.push<Map<String, dynamic>>(
               context,
               MaterialPageRoute(builder: (context) => AddCourseScreen()),
@@ -208,6 +211,7 @@ class _CourseListState extends State<CourseList> {
                 child: IconButton(
                   icon: const Icon(Icons.settings, size: 25),
                   onPressed: () {
+                    HapticFeedback.lightImpact();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const SettingsPage()),
@@ -256,6 +260,7 @@ class _CourseListState extends State<CourseList> {
                           children: [
                             SlidableAction(
                               onPressed: (context) {
+                                HapticFeedback.lightImpact();
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => const SettingsPage()),
@@ -281,6 +286,7 @@ class _CourseListState extends State<CourseList> {
                             style: TextStyle(color: Theme.of(context).colorScheme.tertiaryFixed),
                           ),
                           onTap: () {
+                            HapticFeedback.lightImpact();
                             Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => const SettingsPage()),
