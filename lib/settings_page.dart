@@ -104,21 +104,21 @@ class SettingsPage extends StatelessWidget {
                     errorText: errorText,
                     suffixIcon: controller.text.isNotEmpty
                         ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        HapticFeedback.selectionClick();
-                        setState(() {
-                          controller.clear();
-                          errorText = null; // Remove any previous errors
-                        });
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              HapticFeedback.selectionClick();
+                              setState(() {
+                                controller.clear();
+                                errorText = null; // Remove any previous errors
+                              });
 
-                        // Request focus and set cursor at the start after clearing
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          focusNode.requestFocus();
-                          controller.selection = const TextSelection.collapsed(offset: 0);
-                        });
-                      },
-                    )
+                              // Request focus and set cursor at the start after clearing
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                focusNode.requestFocus();
+                                controller.selection = const TextSelection.collapsed(offset: 0);
+                              });
+                            },
+                          )
                         : null,
                   ),
                   onChanged: (value) {
@@ -192,6 +192,44 @@ class SettingsPage extends StatelessWidget {
               },
               child: Text("Open Email App"),
             ),
+            TextButton(
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                Navigator.pop(context);
+              },
+              child: Text("Close"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showAboutDialog(BuildContext context) {
+    final isDarkMode = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+    HapticFeedback.lightImpact();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("About This App"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("This app utilizes the following equation for GPA calculations:"),
+              SizedBox(height: 10),
+              Center(
+                child: Image.asset(
+                  isDarkMode ? 'images/math-1-white.png' : 'images/math-1.png',
+                  width: 230, // Adjust size as needed
+                  //height: 100,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ],
+          ),
+          actions: [
             TextButton(
               onPressed: () {
                 HapticFeedback.lightImpact();
@@ -330,14 +368,14 @@ class SettingsPage extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 10),
                     child: IconButton(
                       onPressed: () {
-                        HapticFeedback.lightImpact();
+                        //HapticFeedback.lightImpact();
                         _showEmailDialog(context);
                       },
                       icon: Icon(Icons.open_in_new),
                     ),
                   ),
                   onTap: () {
-                    HapticFeedback.lightImpact();
+                    //HapticFeedback.lightImpact();
                     _showEmailDialog(context);
                   },
                 ),
@@ -348,15 +386,15 @@ class SettingsPage extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 10),
                     child: IconButton(
                       onPressed: () {
-                        HapticFeedback.lightImpact();
-                        _showEmailDialog(context);
+                        //HapticFeedback.lightImpact();
+                        _showAboutDialog(context);
                       },
                       icon: Icon(Icons.open_in_new),
                     ),
                   ),
                   onTap: () {
-                    HapticFeedback.lightImpact();
-                    _showEmailDialog(context);
+                    //HapticFeedback.lightImpact();
+                    _showAboutDialog(context);
                   },
                 ),
               ],

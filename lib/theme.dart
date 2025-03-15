@@ -29,7 +29,7 @@ ThemeData lightMode = ThemeData(
     surface: Color(0XFFe3e7f3),
     primaryContainer: Color(0xFFeef1f8),
     primary: Color(0XFFC6CFE6),
-    secondary: Color(0XFFc2c9d7),
+    secondary: Color(0XFFb2bacf),
     tertiary: Color(0XFF9296a2),
     tertiaryFixed: Color(0XFF757882),
     inversePrimary: Color(0XFF0a0a14),

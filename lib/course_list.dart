@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gpa_calculator/add_course.dart';
 import 'package:gpa_calculator/settings_page.dart';
 import 'package:gpa_calculator/gpa_provider.dart';
+import 'package:gpa_calculator/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -114,6 +115,7 @@ class _CourseListState extends State<CourseList> {
     final gpaProvider = Provider.of<GPAProvider>(context);
     final targetGPA = gpaProvider.targetGPA;
     final bool isBelowTarget = predictedGPA < targetGPA;
+    final isDarkMode = Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
 
     return Scaffold(
       // appBar: AppBar(
@@ -231,7 +233,7 @@ class _CourseListState extends State<CourseList> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
-                          'images/backpack.png', // Path to the image
+                          isDarkMode ? 'images/backpack-white.png' : 'images/backpackblack.png', // Path to the image
                           width: 100, // Adjust width as needed
                           height: 100, // Adjust height as needed
                         ),
