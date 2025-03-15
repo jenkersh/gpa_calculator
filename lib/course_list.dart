@@ -162,7 +162,7 @@ class _CourseListState extends State<CourseList> {
             height: 30,
             color: Theme.of(context).colorScheme.surface,
           ),
-          if (courses.isNotEmpty)
+          if (courses.isNotEmpty || gpaProvider.showPreviousCourses == true)
           Stack(
             children: [
               Container(
@@ -242,7 +242,7 @@ class _CourseListState extends State<CourseList> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal:40),
                           child: const Text(
-                            'No courses added. Press "Add Course" to enter your current and future courses!',
+                            'No courses added. Press "Add Course" to enter your current and future course info!',
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                           ),
