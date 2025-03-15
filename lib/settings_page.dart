@@ -233,6 +233,7 @@ class SettingsPage extends StatelessWidget {
     final gpaProvider = Provider.of<GPAProvider>(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(title: const Text('Settings')),
       body: Column(
         children: [

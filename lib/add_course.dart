@@ -328,6 +328,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
           title: Text(widget.isEdit ? 'Edit Course' : 'Add Course')),
       body: Padding(
