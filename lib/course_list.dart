@@ -233,7 +233,7 @@ class _CourseListState extends State<CourseList> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Image.asset(
-                          isDarkMode ? 'images/backpack-white.png' : 'images/backpackblack.png', // Path to the image
+                          isDarkMode ? 'images/backpack-white.png' : 'images/backpack-black.png', // Path to the image
                           width: 100, // Adjust width as needed
                           height: 100, // Adjust height as needed
                         ),
