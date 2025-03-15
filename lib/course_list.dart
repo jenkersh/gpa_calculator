@@ -162,6 +162,7 @@ class _CourseListState extends State<CourseList> {
             height: 30,
             color: Theme.of(context).colorScheme.surface,
           ),
+          if (courses.isNotEmpty)
           Stack(
             children: [
               Container(
@@ -238,10 +239,13 @@ class _CourseListState extends State<CourseList> {
                           height: 100, // Adjust height as needed
                         ),
                         const SizedBox(height: 16), // Add some spacing between the image and text
-                        const Text(
-                          'No courses added.\n Press "Add Course" to start!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal:40),
+                          child: const Text(
+                            'No courses added. Press "Add Course" to enter your current and future courses!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
                         ),
                         SizedBox(height: 100),
                       ],
