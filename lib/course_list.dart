@@ -173,7 +173,7 @@ class _CourseListState extends State<CourseList> {
                       text: TextSpan(
                         style: TextStyle(
                           fontSize: 24,
-                          color: isBelowTarget ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.inversePrimary,
+                          color: isBelowTarget ? Colors.red : Theme.of(context).colorScheme.inversePrimary,
                         ),
                         children: [
                           TextSpan(
@@ -202,7 +202,7 @@ class _CourseListState extends State<CourseList> {
               if (isBelowTarget) // Overlay only if GPA is below target
                 Positioned.fill(
                   child: Container(
-                    color: Theme.of(context).colorScheme.error.withOpacity(.2), // Semi-transparent red overlay
+                    color: Colors.red.withOpacity(.2), // Semi-transparent red overlay
                   ),
                 ),
               Positioned(
@@ -309,7 +309,7 @@ class _CourseListState extends State<CourseList> {
                           SlidableAction(
                             onPressed: (context) => deleteCourse(index),
                             icon: Icons.delete,
-                            backgroundColor: Theme.of(context).colorScheme.error,
+                            backgroundColor: Colors.red.withOpacity(0.7),
                           ),
                         ],
                       ),

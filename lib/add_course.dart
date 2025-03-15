@@ -102,7 +102,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                 HapticFeedback.lightImpact();
                 Navigator.pop(context);
               },
-              child: const Text("Done"),
+              child: Column(
+                children: [
+                  const Text("Done"),
+                  SizedBox(height: 10),
+                ],
+              ),
             )
           ],
         ),
@@ -114,7 +119,8 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     TextEditingController controller;
     String title;
     String? errorText;
-    String originalValue; // Store original value
+    String originalValue;
+    FocusNode focusNode = FocusNode(); // Create a FocusNode
 
     if (editorType == 'name') {
       controller = _nameController;
@@ -125,6 +131,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       title = "Edit Grade";
       originalValue = controller.text;
     }
+
+    // Ensure the keyboard opens when the dialog appears
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      focusNode.requestFocus();
+      controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+    });
 
     void validateAndSave(StateSetter setState) {
       String input = controller.text.trim();
@@ -172,6 +184,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               children: [
                 TextField(
                   controller: controller,
+                  focusNode: focusNode, // Assign focus node
                   keyboardType: editorType == 'grade'
                       ? const TextInputType.numberWithOptions(decimal: true)
                       : TextInputType.text,
@@ -189,6 +202,22 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                         width: 2,
                       ),
                     ),
+                    errorBorder: OutlineInputBorder(
+                      // Ensures full outline when error occurs
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        width: 2, // Keeps the thickness the same
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      // Ensures full outline remains on focus
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      borderSide: const BorderSide(
+                        color: Colors.red,
+                        width: 2,
+                      ),
+                    ),
                     hintText: editorType == 'name' ? 'Enter course name' : 'Enter grade',
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     errorText: errorText,
@@ -200,6 +229,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                         setState(() {
                           controller.clear();
                           errorText = null; // Remove any previous errors
+                        });
+
+                        // Request focus and set cursor at the start after clearing
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          focusNode.requestFocus();
+                          controller.selection = const TextSelection.collapsed(offset: 0);
                         });
                       },
                     )

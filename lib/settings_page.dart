@@ -15,6 +15,13 @@ class SettingsPage extends StatelessWidget {
   void _editValue(BuildContext context, String title, dynamic currentValue, Function(dynamic) onSave) {
     TextEditingController controller = TextEditingController(text: currentValue.toString());
     String? errorText;
+    FocusNode focusNode = FocusNode(); // Create a FocusNode
+
+    // Ensure the keyboard opens automatically with the cursor at the end
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      focusNode.requestFocus();
+      controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
+    });
 
     void validateAndSave(StateSetter setState) {
       String input = controller.text.trim();
@@ -62,6 +69,7 @@ class SettingsPage extends StatelessWidget {
               children: [
                 TextField(
                   controller: controller,
+                  focusNode: focusNode, // Assign the focus node
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
@@ -78,15 +86,13 @@ class SettingsPage extends StatelessWidget {
                       ),
                     ),
                     errorBorder: OutlineInputBorder(
-                      // Ensures full outline when error occurs
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                       borderSide: const BorderSide(
                         color: Colors.red,
-                        width: 2, // Keeps the thickness the same
+                        width: 2,
                       ),
                     ),
                     focusedErrorBorder: OutlineInputBorder(
-                      // Ensures full outline remains on focus
                       borderRadius: const BorderRadius.all(Radius.circular(10)),
                       borderSide: const BorderSide(
                         color: Colors.red,
@@ -98,15 +104,21 @@ class SettingsPage extends StatelessWidget {
                     errorText: errorText,
                     suffixIcon: controller.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              HapticFeedback.selectionClick();
-                              setState(() {
-                                controller.clear();
-                                errorText = null; // Remove any previous errors
-                              });
-                            },
-                          )
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        HapticFeedback.selectionClick();
+                        setState(() {
+                          controller.clear();
+                          errorText = null; // Remove any previous errors
+                        });
+
+                        // Request focus and set cursor at the start after clearing
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          focusNode.requestFocus();
+                          controller.selection = const TextSelection.collapsed(offset: 0);
+                        });
+                      },
+                    )
                         : null,
                   ),
                   onChanged: (value) {
