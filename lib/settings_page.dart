@@ -341,6 +341,24 @@ class SettingsPage extends StatelessWidget {
                     _showEmailDialog(context);
                   },
                 ),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                  title: const Text('About This App', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  trailing: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        _showEmailDialog(context);
+                      },
+                      icon: Icon(Icons.open_in_new),
+                    ),
+                  ),
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    _showEmailDialog(context);
+                  },
+                ),
               ],
             ),
           ),
