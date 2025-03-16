@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:gpa_calculator/my_textfield.dart';
 import 'package:gpa_calculator/my_tile.dart';
 import 'package:gpa_calculator/theme_provider.dart';
 import 'package:gpa_calculator/gpa_provider.dart';

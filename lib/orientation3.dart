@@ -3,10 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:gpa_calculator/orientation4.dart';
 import 'package:provider/provider.dart';
 import 'gpa_provider.dart';
-import 'course_list.dart';
 import 'new_textfield.dart'; // Import the NewTextField widget
 
 class Orientation3 extends StatefulWidget {
+  const Orientation3({super.key});
+
   @override
   _Orientation3State createState() => _Orientation3State();
 }

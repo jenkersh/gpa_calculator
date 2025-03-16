@@ -8,7 +8,7 @@ class NewTextField extends StatelessWidget {
   final String? errorText;
   final FocusNode? focusNode;
 
-  NewTextField({
+  const NewTextField({super.key,
     required this.controller,
     required this.label,
     this.isGPAField = false,

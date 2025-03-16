@@ -12,7 +12,7 @@ ThemeData darkMode = ThemeData(
     tertiaryFixed: Color(0xFF797C88),
     inversePrimary: Color(0xFFdddde1),
     scrim: Color(0xFF5dfbaf),
-    surfaceVariant: Colors.transparent,
+    surfaceContainerHighest: Colors.transparent,
     outlineVariant: Color(0xFF5dfbaf),
   ),
   textButtonTheme: TextButtonThemeData(
@@ -34,7 +34,7 @@ ThemeData lightMode = ThemeData(
     tertiaryFixed: Color(0XFF757882),
     inversePrimary: Color(0XFF0a0a14),
     scrim: Color(0xff5dfbaf),
-    surfaceVariant: Color(0xff5dfbaf),
+    surfaceContainerHighest: Color(0xff5dfbaf),
     outlineVariant: Color(0xff01b173),
   ),
   textButtonTheme: TextButtonThemeData(

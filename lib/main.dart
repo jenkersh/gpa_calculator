@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gpa_calculator/course_list.dart';
 import 'package:gpa_calculator/gpa_provider.dart';
-import 'package:gpa_calculator/orientation1.dart';
 import 'package:gpa_calculator/theme_provider.dart';
 import 'package:gpa_calculator/welcome_page.dart';
 import 'package:provider/provider.dart';

@@ -6,6 +6,8 @@ import 'gpa_provider.dart';
 import 'new_textfield.dart'; // Import the NewTextField widget
 
 class Orientation2 extends StatefulWidget {
+  const Orientation2({super.key});
+
   @override
   _Orientation2State createState() => _Orientation2State();
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gpa_calculator/orientation3.dart';
 import 'package:gpa_calculator/orientation4.dart';
 import 'package:provider/provider.dart';
 import 'package:gpa_calculator/gpa_provider.dart';
-import 'package:gpa_calculator/course_list.dart';
 import 'orientation2.dart';
 
 class Orientation1 extends StatelessWidget {
+  const Orientation1({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class Orientation1 extends StatelessWidget {
             ),
             //SizedBox(height: 20),
             Spacer(),
-            Container(
+            SizedBox(
               width: 200,
               child: OutlinedButton(
                 onPressed: () async {
@@ -41,7 +41,7 @@ class Orientation1 extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            Container(
+            SizedBox(
               width: 200,
               child: OutlinedButton(
                 onPressed: () async {

@@ -2,14 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:gpa_calculator/my_textfield.dart';
 import 'package:gpa_calculator/my_tile.dart';
 
 class AddCourseScreen extends StatefulWidget {
   final Map<String, dynamic>? courseData; // Optionally pass course data
   final bool isEdit;  // Flag to indicate if it's edit mode
 
-  const AddCourseScreen({Key? key, this.courseData, this.isEdit = false}) : super(key: key);
+  const AddCourseScreen({super.key, this.courseData, this.isEdit = false});
 
   @override
   State<AddCourseScreen> createState() => _AddCourseScreenState();

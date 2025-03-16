@@ -199,7 +199,7 @@ class _CourseListState extends State<CourseList> {
                             ),
                           ),
                           TextSpan(
-                            text: '${predictedGPA.toStringAsFixed(2)}',
+                            text: predictedGPA.toStringAsFixed(2),
                             style: TextStyle(
                               fontWeight: FontWeight.w900,
                             ),
