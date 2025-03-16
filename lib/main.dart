@@ -6,22 +6,35 @@ import 'package:gpa_calculator/orientation1.dart';
 import 'package:gpa_calculator/theme_provider.dart';
 import 'package:gpa_calculator/welcome_page.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+
+  final bool hasCompletedOnboarding = await _checkIfOnboardingCompleted();
+
   runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(create: (context) => GPAProvider()),
-      ChangeNotifierProvider(create: (context) => ThemeProvider()),
-    ], child: const MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GPAProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      ],
+      child: MyApp(hasCompletedOnboarding: hasCompletedOnboarding),
+    ),
   );
 }
 
+Future<bool> _checkIfOnboardingCompleted() async {
+  final prefs = await SharedPreferences.getInstance();
+  return prefs.getBool('hasCompletedOnboarding') ?? false;
+}
+
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasCompletedOnboarding;
+  const MyApp({super.key, required this.hasCompletedOnboarding});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +44,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'GPA Calculator',
           theme: themeProvider.themeData,
-          home: WelcomePage(),
+          home: hasCompletedOnboarding ? CourseList() : WelcomePage(),
         );
       },
     );

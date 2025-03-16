@@ -135,14 +135,14 @@ class SettingsPage extends StatelessWidget {
                   HapticFeedback.lightImpact();
                   Navigator.pop(context);
                 },
-                child: const Text('Cancel', style: TextStyle(fontSize: 18)),
+                child: const Text('Cancel', style: TextStyle(fontSize: 16)),
               ),
               TextButton(
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   validateAndSave(setState);
                 },
-                child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                child: const Text('Save', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
               ),
             ],
           );
@@ -218,7 +218,7 @@ class SettingsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("This app utilizes the following equation for GPA calculations:"),
-              SizedBox(height: 10),
+              SizedBox(height: 30),
               Center(
                 child: Image.asset(
                   isDarkMode ? 'images/math-1-white.png' : 'images/math-1.png',
@@ -227,6 +227,7 @@ class SettingsPage extends StatelessWidget {
                   fit: BoxFit.contain,
                 ),
               ),
+              SizedBox(height: 10),
             ],
           ),
           actions: [

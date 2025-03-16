@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gpa_calculator/orientation3.dart';
 import 'package:provider/provider.dart';
 import 'gpa_provider.dart';
@@ -23,6 +24,7 @@ class _Orientation2State extends State<Orientation2> {
   }
 
   void _validateAndProceed() {
+    HapticFeedback.lightImpact();
     setState(() {
       _creditsError = _validateCredits(_creditsController.text);
     });
@@ -66,7 +68,7 @@ class _Orientation2State extends State<Orientation2> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Awesome. How many credits have you completed?",
+            Text("Awesome. How many credits have you completed? (you can change this later)",
                 style: TextStyle(fontSize: 22, letterSpacing: 1.2)),
             //Spacer(),
             SizedBox(height: 40),

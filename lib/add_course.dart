@@ -255,14 +255,14 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   controller.text = originalValue; // Restore original value
                   Navigator.pop(context);
                 },
-                child: const Text("Cancel", style: TextStyle(fontSize: 18)),
+                child: const Text("Cancel", style: TextStyle(fontSize: 16)),
               ),
               TextButton(
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   validateAndSave(setState);
                 },
-                child: const Text("Save", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),),
+                child: const Text("Save", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
               ),
             ],
           );

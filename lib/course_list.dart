@@ -5,6 +5,7 @@ import 'package:gpa_calculator/add_course.dart';
 import 'package:gpa_calculator/settings_page.dart';
 import 'package:gpa_calculator/gpa_provider.dart';
 import 'package:gpa_calculator/theme_provider.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,11 +22,25 @@ class _CourseListState extends State<CourseList> {
   final List<Map<String, dynamic>> courses = [
     //{'completed': 'yes', 'name': 'Mathematics', 'grade': '2.71', 'icon': 2, 'credits': 4},
   ];
+  final InAppReview inAppReview = InAppReview.instance;
 
   @override
   void initState() {
     super.initState();
     _loadCourses();
+  }
+
+  Future<void> _checkForRatingPrompt() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool hasShownRatingPrompt = prefs.getBool('hasShownRatingPrompt') ?? false;
+
+    if (courses.length == 1 && !hasShownRatingPrompt) {
+      await prefs.setBool('hasShownRatingPrompt', true);
+
+      if (await inAppReview.isAvailable()) {
+        await inAppReview.requestReview();
+      }
+    }
   }
 
   void _loadCourses() async {
@@ -39,8 +54,6 @@ class _CourseListState extends State<CourseList> {
       });
     }
   }
-
-
 
   double get predictedGPA {
     double totalGradePoints = 0;
@@ -79,6 +92,7 @@ class _CourseListState extends State<CourseList> {
       courses.add(course);
       _saveCourses(); // Save after adding
     });
+    _checkForRatingPrompt();
   }
 
   void deleteCourse(int index) {
@@ -108,7 +122,6 @@ class _CourseListState extends State<CourseList> {
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +295,7 @@ class _CourseListState extends State<CourseList> {
                             color: Theme.of(context).colorScheme.tertiaryFixed,
                           ),
                           title: const Text(
-                            "Previous Credits",
+                            "Previous Courses",
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                           ),
                           subtitle: Text(

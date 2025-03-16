@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gpa_calculator/orientation4.dart';
 import 'package:provider/provider.dart';
 import 'gpa_provider.dart';
@@ -24,6 +25,7 @@ class _Orientation3State extends State<Orientation3> {
   }
 
   void _validateAndProceed() {
+    HapticFeedback.lightImpact();
     setState(() {
       _gpaError = _validateGPA(_gpaController.text);
     });
@@ -66,7 +68,7 @@ class _Orientation3State extends State<Orientation3> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Great! What's your current GPA?",
+            Text("Great! What's your current GPA? (you can change this later)",
                 style: TextStyle(fontSize: 22, letterSpacing: 1.2)),
             //Spacer(),
             SizedBox(height: 40),

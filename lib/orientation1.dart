@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gpa_calculator/orientation3.dart';
 import 'package:gpa_calculator/orientation4.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class Orientation1 extends StatelessWidget {
                   // Set the showPreviousCourses value to true if "Yes"
                   await Provider.of<GPAProvider>(context, listen: false)
                       .togglePreviousCourses(true);
-
+                  HapticFeedback.lightImpact();
                   // Navigate to the next screen if "Yes"
                   Navigator.push(
                     context,
@@ -47,7 +48,7 @@ class Orientation1 extends StatelessWidget {
                   // Set the showPreviousCourses value to false if "No"
                   await Provider.of<GPAProvider>(context, listen: false)
                       .togglePreviousCourses(false);
-
+                  HapticFeedback.lightImpact();
                   // End the orientation if "No"
                   Navigator.push(
                     context,

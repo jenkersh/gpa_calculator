@@ -73,6 +73,7 @@ class _WelcomePageState extends State<WelcomePage> {
                       elevation: 10,
                     ),
                     onPressed: () {
+                      HapticFeedback.mediumImpact();
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => Orientation1()),
