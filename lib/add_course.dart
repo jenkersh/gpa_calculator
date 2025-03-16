@@ -155,7 +155,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           setState(() => errorText = "Invalid number.");
           return;
         } else if (grade < 0.00 || grade > 4.00) {
-          setState(() => errorText = "Grade must be between 0.0 and 4.0.");
+          setState(() => errorText = "Grade must be below 4.0.");
           return;
         } else {
           grade = double.parse(grade.toStringAsFixed(2));

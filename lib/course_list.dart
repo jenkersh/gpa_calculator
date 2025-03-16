@@ -162,7 +162,7 @@ class _CourseListState extends State<CourseList> {
             height: 30,
             color: Theme.of(context).colorScheme.surface,
           ),
-         if (courses.isNotEmpty)
+         if (courses.isNotEmpty || gpaProvider.showPreviousCourses == true)
           Stack(
             children: [
               Container(
@@ -228,7 +228,7 @@ class _CourseListState extends State<CourseList> {
             child: Consumer<GPAProvider>(
               builder: (context, gpaProvider, child) {
                 // If no courses and showPreviousCourses is false, display a message
-                if (courses.isEmpty) {
+                if (courses.isEmpty && gpaProvider.showPreviousCourses == false) {
                   return Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
