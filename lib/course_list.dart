@@ -150,7 +150,7 @@ class _CourseListState extends State<CourseList> {
             }
           },
           icon: Icon(Icons.add, color: Colors.black),
-          label: Text("Add Course", style: TextStyle(color: Colors.black)),
+          label: Text("Add Course", style: TextStyle(color: Colors.black, fontSize: 16)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),
           ),
@@ -162,7 +162,7 @@ class _CourseListState extends State<CourseList> {
             height: 30,
             color: Theme.of(context).colorScheme.surface,
           ),
-          if (courses.isNotEmpty || gpaProvider.showPreviousCourses == true)
+         if (courses.isNotEmpty)
           Stack(
             children: [
               Container(
@@ -228,7 +228,7 @@ class _CourseListState extends State<CourseList> {
             child: Consumer<GPAProvider>(
               builder: (context, gpaProvider, child) {
                 // If no courses and showPreviousCourses is false, display a message
-                if (courses.isEmpty && !gpaProvider.showPreviousCourses) {
+                if (courses.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -250,10 +250,8 @@ class _CourseListState extends State<CourseList> {
                         SizedBox(height: 100),
                       ],
                     ),
-                  )
-                  ;
+                  );
                 }
-
                 return ListView.separated(
                   padding: EdgeInsets.only(bottom: 100),
                   itemCount: courses.length + (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 ? 1 : 0), // Conditionally add the previous credits tile
@@ -352,8 +350,6 @@ class _CourseListState extends State<CourseList> {
               },
             ),
           )
-
-
         ],
       ),
     );

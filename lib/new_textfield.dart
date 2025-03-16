@@ -4,8 +4,9 @@ class NewTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final bool isGPAField;
-  final String? Function(String)? validator; // Validation function
-  final String? errorText; // Display error message
+  final String? Function(String)? validator;
+  final String? errorText;
+  final FocusNode? focusNode;
 
   NewTextField({
     required this.controller,
@@ -13,6 +14,7 @@ class NewTextField extends StatelessWidget {
     this.isGPAField = false,
     this.validator,
     this.errorText,
+    this.focusNode,
   });
 
   @override
@@ -24,6 +26,7 @@ class NewTextField extends StatelessWidget {
         children: [
           TextField(
             controller: controller,
+            focusNode: focusNode,
             keyboardType: isGPAField
                 ? TextInputType.numberWithOptions(decimal: true)
                 : TextInputType.number,
@@ -31,54 +34,36 @@ class NewTextField extends StatelessWidget {
               labelText: label,
               labelStyle: TextStyle(
                 fontSize: 16,
-                color: Theme.of(context).colorScheme.secondary,
+                color: errorText != null ? Colors.red : Theme.of(context).colorScheme.tertiaryFixed,
+              ),
+              errorStyle: TextStyle(
+                fontSize: 14,
+                color: Colors.red,
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
                 borderSide: BorderSide(
                   color: Theme.of(context).colorScheme.tertiaryFixed,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
                 borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.inversePrimary.withOpacity(.8),
+                  color: errorText != null ? Colors.red : Theme.of(context).colorScheme.inversePrimary.withOpacity(.8),
                   width: 2,
                 ),
               ),
               errorBorder: OutlineInputBorder(
-                // Ensures full outline when error occurs
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 2, // Keeps the thickness the same
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(color: Colors.red, width: 2),
               ),
               focusedErrorBorder: OutlineInputBorder(
-                // Ensures full outline remains on focus
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                borderSide: const BorderSide(
-                  color: Colors.red,
-                  width: 2,
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(color: Colors.red, width: 2),
               ),
-              errorText: errorText, // Display the error text
+              errorText: errorText,
             ),
-            onChanged: (value) {
-              // Call the validator every time the text changes
-              if (validator != null) {
-                validator!(value); // This triggers error logic
-              }
-            },
           ),
-          // if (errorText != null)
-          //   Padding(
-          //     padding: const EdgeInsets.only(top: 8.0),
-          //     child: Text(
-          //       errorText!,
-          //       style: TextStyle(color: Colors.red, fontSize: 12),
-          //     ),
-          //   ),
         ],
       ),
     );

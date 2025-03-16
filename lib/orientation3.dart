@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gpa_calculator/orientation4.dart';
 import 'package:provider/provider.dart';
 import 'gpa_provider.dart';
 import 'course_list.dart';
@@ -10,25 +11,50 @@ class Orientation3 extends StatefulWidget {
 }
 
 class _Orientation3State extends State<Orientation3> {
-  final _targetGPAController = TextEditingController();
+  final _gpaController = TextEditingController();
+  final _gpaFocusNode = FocusNode();
+  String? _gpaError;
 
-  String? _targetGPAError;
-
-  void _validateTargetGPA() {
-    setState(() {
-      _targetGPAError = _validateGPA(_targetGPAController.text);
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 300), () {
+      FocusScope.of(context).requestFocus(_gpaFocusNode);
     });
   }
 
+  void _validateAndProceed() {
+    setState(() {
+      _gpaError = _validateGPA(_gpaController.text);
+    });
+
+    if (_gpaError == null) {
+      double previousGPA = double.parse(_gpaController.text);
+
+      // Update provider
+      Provider.of<GPAProvider>(context, listen: false)
+          .updateCurrentGPA(previousGPA);
+
+      // Navigate to main course list page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Orientation4()),
+      );
+    }
+  }
+
   String? _validateGPA(String value) {
-    if (value.isEmpty) {
-      return "Target GPA can't be empty.";
-    }
+    if (value.isEmpty) return "Current GPA can't be empty.";
     final gpa = double.tryParse(value);
-    if (gpa == null || gpa < 0.0 || gpa > 4.0) {
-      return "Please enter a valid GPA between 0.0 and 4.0.";
-    }
+    if (gpa == null || gpa < 0.0 || gpa > 4.0) return "Enter a valid number (up to 4.0).";
     return null;
+  }
+
+  @override
+  void dispose() {
+    _gpaController.dispose();
+    _gpaFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -36,50 +62,34 @@ class _Orientation3State extends State<Orientation3> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 75),
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 60),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "Enter your target GPA below.",
-              style: TextStyle(fontSize: 22),
-            ),
-            Spacer(),
+            Text("Great! What's your current GPA?",
+                style: TextStyle(fontSize: 22, letterSpacing: 1.2)),
+            //Spacer(),
+            SizedBox(height: 40),
             NewTextField(
-              controller: _targetGPAController,
-              label: "Target GPA",
+              controller: _gpaController,
+              label: "Current GPA",
               isGPAField: true,
-              errorText: _targetGPAError,
+              errorText: _gpaError,
               validator: (value) => _validateGPA(value),
+              focusNode: _gpaFocusNode, // Set focus node
             ),
-            Spacer(),
+            //Spacer(),
+            SizedBox(height: 30),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.scrim,
                 minimumSize: const Size(double.infinity, 50),
                 elevation: 5,
               ),
-              onPressed: () async {
-                _validateTargetGPA(); // Validate inputs before proceeding
-
-                // Check for errors before proceeding
-                if (_targetGPAError == null) {
-                  // Retrieve the input value
-                  double targetGPA = double.parse(_targetGPAController.text);
-
-                  // Update the provider with the target GPA
-                  await Provider.of<GPAProvider>(context, listen: false)
-                      .updateTargetGPA(targetGPA);
-
-                  // Navigate to the next screen (CourseList)
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CourseList()),
-                  );
-                }
-              },
-              child: Text("Submit", style: TextStyle(color: Colors.black, fontSize: 18)),
+              onPressed: _validateAndProceed,
+              child: Text("Continue", style: TextStyle(color: Colors.black, fontSize: 18)),
             ),
+            Spacer(),
           ],
         ),
       ),
