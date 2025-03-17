@@ -11,54 +11,72 @@ class Orientation1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: AppBar(title: Text("Orientation")),
-      body: Container(
-        margin: EdgeInsets.symmetric(horizontal: 30, vertical: 60),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 60),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const Expanded(
+              flex: 1, // Adjust space above the question
+              child: SizedBox(),
+            ),
             Text(
               "Have you completed any courses at your current school?",
               style: TextStyle(fontSize: 22, letterSpacing: 1.2),
+              //textAlign: TextAlign.center,
             ),
-            //SizedBox(height: 20),
-            Spacer(),
+            const Expanded(
+              flex: 2, // Spacing between text and buttons
+              child: SizedBox(),
+            ),
             SizedBox(
               width: 200,
               child: OutlinedButton(
                 onPressed: () async {
-                  // Set the showPreviousCourses value to true if "Yes"
                   await Provider.of<GPAProvider>(context, listen: false)
                       .togglePreviousCourses(true);
                   HapticFeedback.lightImpact();
-                  // Navigate to the next screen if "Yes"
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Orientation2()),
                   );
                 },
-                child: Text("Yes", style: TextStyle(color:Theme.of(context).colorScheme.inversePrimary, fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text(
+                  "Yes",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
               width: 200,
               child: OutlinedButton(
                 onPressed: () async {
-                  // Set the showPreviousCourses value to false if "No"
                   await Provider.of<GPAProvider>(context, listen: false)
                       .togglePreviousCourses(false);
                   HapticFeedback.lightImpact();
-                  // End the orientation if "No"
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Orientation4()),
                   );
                 },
-                child: Text("No", style: TextStyle(color:Theme.of(context).colorScheme.inversePrimary, fontSize: 20, fontWeight: FontWeight.bold)),
+                child: Text(
+                  "No",
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
-            Spacer(),
+            const Expanded(
+              flex: 8, // Space below buttons
+              child: SizedBox(),
+            ),
           ],
         ),
       ),

@@ -80,34 +80,35 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     showCupertinoModalPopup(
       context: context,
       builder: (_) => Container(
-        height: 250,
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom), // Adjust for safe area
         color: Theme.of(context).colorScheme.surface,
         child: Column(
+          mainAxisSize: MainAxisSize.min, // Prevent overflow by using only necessary space
           children: [
             SizedBox(
               height: 200,
               child: CupertinoPicker(
                 backgroundColor: Theme.of(context).colorScheme.surface,
-                itemExtent: 32,
-                scrollController: FixedExtentScrollController(initialItem: _selectedCredits - 1), // Adjust index to match the range
+                itemExtent: 36, // Maintain readable size
+                scrollController: FixedExtentScrollController(initialItem: _selectedCredits - 1),
                 onSelectedItemChanged: (value) {
-                  setState(() => _selectedCredits = value + 1);  // Update selectedCredits, ensuring it's 1-based
+                  setState(() => _selectedCredits = value + 1);
                 },
-                children: List.generate(10, (index) => Text('${index + 1}')), // 1-10 credits
+                children: List.generate(10, (index) => Text('${index + 1}', style: TextStyle(fontSize: 20))),
               ),
             ),
+            //SizedBox(height: 10), // Added some space between picker and button
             TextButton(
               onPressed: () {
                 HapticFeedback.lightImpact();
                 Navigator.pop(context);
               },
-              child: Column(
-                children: [
-                  const Text("Done"),
-                  SizedBox(height: 10),
-                ],
+              child: Text(
+                "Done",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            )
+            ),
+            SizedBox(height: 20), // Ensuring extra spacing at the bottom to prevent overflow
           ],
         ),
       ),
@@ -145,7 +146,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           setState(() => errorText = "Name can't be empty.");
           return;
         } else if (input.length > 30) {
-          setState(() => errorText = "Max 30 chars.");
+          setState(() => errorText = "Max 30 characters.");
           return;
         }
       } else if (editorType == 'grade') {
@@ -390,7 +391,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
             ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.scrim,

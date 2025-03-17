@@ -21,7 +21,7 @@ class _Orientation4State extends State<Orientation4> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       FocusScope.of(context).requestFocus(_targetGPAFocusNode);
     });
   }
@@ -59,13 +59,14 @@ class _Orientation4State extends State<Orientation4> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 60),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start, // Left-align text
           children: [
+            const Expanded(flex: 1, child: SizedBox()), // Space at the top
             Text(
               "What would you like your GPA to be? (you can change this later)",
               style: TextStyle(fontSize: 22, letterSpacing: 1.2),
             ),
-            SizedBox(height: 40),
+            const Expanded(flex: 1, child: SizedBox()), // Space between text and input field
             NewTextField(
               controller: _targetGPAController,
               label: "Target GPA",
@@ -74,7 +75,7 @@ class _Orientation4State extends State<Orientation4> {
               validator: (value) => _validateGPA(value),
               focusNode: _targetGPAFocusNode,
             ),
-            SizedBox(height: 30),
+            const Expanded(flex: 1, child: SizedBox()), // Space between input field and button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.scrim,
@@ -104,7 +105,7 @@ class _Orientation4State extends State<Orientation4> {
               },
               child: Text("Continue", style: TextStyle(color: Colors.black, fontSize: 18)),
             ),
-            Spacer(),
+            const Expanded(flex: 8, child: SizedBox()), // Space at the bottom
           ],
         ),
       ),

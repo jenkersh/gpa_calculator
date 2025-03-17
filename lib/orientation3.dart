@@ -20,7 +20,7 @@ class _Orientation3State extends State<Orientation3> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       FocusScope.of(context).requestFocus(_gpaFocusNode);
     });
   }
@@ -67,12 +67,14 @@ class _Orientation3State extends State<Orientation3> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 60),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start, // Left-align text
           children: <Widget>[
-            Text("Great! What's your current GPA? (you can change this later)",
-                style: TextStyle(fontSize: 22, letterSpacing: 1.2)),
-            //Spacer(),
-            SizedBox(height: 40),
+            const Expanded(flex: 1, child: SizedBox()), // Adds space at the top
+            Text(
+              "Great! What's your current GPA? (you can change this later)",
+              style: TextStyle(fontSize: 22, letterSpacing: 1.2),
+            ),
+            const Expanded(flex: 1, child: SizedBox()), // Space between text and text field
             NewTextField(
               controller: _gpaController,
               label: "Current GPA",
@@ -81,8 +83,7 @@ class _Orientation3State extends State<Orientation3> {
               validator: (value) => _validateGPA(value),
               focusNode: _gpaFocusNode, // Set focus node
             ),
-            //Spacer(),
-            SizedBox(height: 30),
+            const Expanded(flex: 1, child: SizedBox()), // Space between text field and button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.scrim,
@@ -92,7 +93,7 @@ class _Orientation3State extends State<Orientation3> {
               onPressed: _validateAndProceed,
               child: Text("Continue", style: TextStyle(color: Colors.black, fontSize: 18)),
             ),
-            Spacer(),
+            const Expanded(flex: 8, child: SizedBox()), // Space at the bottom
           ],
         ),
       ),

@@ -219,7 +219,7 @@ class SettingsPage extends StatelessWidget {
               SizedBox(height: 30),
               Center(
                 child: Image.asset(
-                  isDarkMode ? 'images/math-1-white.png' : 'images/math-1.png',
+                  isDarkMode ? 'images/math-white.png' : 'images/math-black.png',
                   width: 230, // Adjust size as needed
                   //height: 100,
                   fit: BoxFit.contain,
@@ -399,21 +399,19 @@ class SettingsPage extends StatelessWidget {
               ],
             ),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.scrim,
-                  minimumSize: const Size(double.infinity, 50),
-                  elevation: 5,
-                ),
-                onPressed: () {
-                  HapticFeedback.lightImpact();
-                  Navigator.pop(context);
-                },
-                child: Text('Save Changes', style: TextStyle(color: Colors.black, fontSize: 18)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.scrim,
+                minimumSize: const Size(double.infinity, 50),
+                elevation: 5,
               ),
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                Navigator.pop(context);
+              },
+              child: Text('Save Changes', style: TextStyle(color: Colors.black, fontSize: 18)),
             ),
           ),
         ],

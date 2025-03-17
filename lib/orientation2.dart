@@ -20,7 +20,7 @@ class _Orientation2State extends State<Orientation2> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       FocusScope.of(context).requestFocus(_creditsFocusNode);
     });
   }
@@ -68,12 +68,14 @@ class _Orientation2State extends State<Orientation2> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 60),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Awesome. How many credits have you completed? (you can change this later)",
-                style: TextStyle(fontSize: 22, letterSpacing: 1.2)),
-            //Spacer(),
-            SizedBox(height: 40),
+            const Expanded(flex: 1, child: SizedBox()), // Adds space at the top
+            Text(
+              "Awesome. How many credits have you completed? (you can change this later)",
+              style: TextStyle(fontSize: 22, letterSpacing: 1.2),
+              //textAlign: TextAlign.center,
+            ),
+            const Expanded(flex: 1, child: SizedBox()), // Space between text and text field
             NewTextField(
               controller: _creditsController,
               label: "Completed Credits",
@@ -81,8 +83,7 @@ class _Orientation2State extends State<Orientation2> {
               validator: (value) => _validateCredits(value),
               focusNode: _creditsFocusNode, // Set focus node
             ),
-            //Spacer(),
-            SizedBox(height: 30),
+            const Expanded(flex: 1, child: SizedBox()), // Space between text field and button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.scrim,
@@ -92,7 +93,7 @@ class _Orientation2State extends State<Orientation2> {
               onPressed: _validateAndProceed,
               child: Text("Continue", style: TextStyle(color: Colors.black, fontSize: 18)),
             ),
-            Spacer(),
+            const Expanded(flex: 8, child: SizedBox()), // Space at the bottom
           ],
         ),
       ),
