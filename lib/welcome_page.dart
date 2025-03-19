@@ -24,7 +24,7 @@ class _WelcomePageState extends State<WelcomePage> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.black.withOpacity(.6),
+                  Colors.black.withOpacity(.5),
                   Colors.transparent,
                 ],
                 begin: Alignment.topCenter,
@@ -54,20 +54,31 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
                 Column(
                   children: [
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "GP",
+                            style: TextStyle(fontSize: 43, fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(
+                            text: "Ace",
+                            style: TextStyle(fontSize: 43, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 2),
                     Text(
                       "GPA Calculator",
                       style: TextStyle(fontSize: 35, height: 0.9, letterSpacing: 4),
                       textAlign: TextAlign.center,
                     ),
-                    Text(
-                      "PRO",
-                      style: TextStyle(fontSize: 43, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
                   ],
                 ),
                 const Expanded(
-                  flex: 10, // Proportional spacing in the middle
+                  flex: 12, // Proportional spacing in the middle
                   child: SizedBox(),
                 ),
                 ElevatedButton(
