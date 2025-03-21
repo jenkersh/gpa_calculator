@@ -194,10 +194,12 @@ class _CourseListState extends State<CourseList> {
                                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: isBelowTarget ? Colors.red : Theme.of(context).colorScheme.scrim,
+                                      color: isBelowTarget ?
+                                      Colors.red :
+                                      isDarkMode ? Theme.of(context).colorScheme.scrim : Colors.black,
                                       width: 3,
                                     ),
-                                    borderRadius: BorderRadius.circular(15),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
                                     predictedGPA.toStringAsFixed(2),
@@ -209,7 +211,7 @@ class _CourseListState extends State<CourseList> {
                                   ),
                                 ),
                                 Positioned(
-                                  left: maxWidth * -0.15,
+                                  left: maxWidth * -0.149,
                                   child: Transform.rotate(
                                     angle: -90 * (3.1415926535 / 180),
                                     child: Text(
