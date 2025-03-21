@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class CourseList extends StatefulWidget {
   const CourseList({super.key});
 
@@ -172,68 +171,96 @@ class _CourseListState extends State<CourseList> {
       body: SafeArea(
         child: Column(
           children: [
-           if (courses.isNotEmpty || gpaProvider.showPreviousCourses == true)
-            Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: isBelowTarget ? Colors.red : Theme.of(context).colorScheme.inversePrimary,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Predicted GPA: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            TextSpan(
-                              text: predictedGPA.toStringAsFixed(2),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ],
+            if (courses.isNotEmpty || gpaProvider.showPreviousCourses == true)
+              Stack(
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            double maxWidth = constraints.maxWidth;
+                            double gpaFontSize = maxWidth * 0.2;
+                            gpaFontSize = gpaFontSize.clamp(40, 100);
+
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: isBelowTarget ? Colors.red : Theme.of(context).colorScheme.scrim,
+                                      width: 3,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: Text(
+                                    predictedGPA.toStringAsFixed(2),
+                                    style: TextStyle(
+                                      fontSize: gpaFontSize,
+                                      fontWeight: FontWeight.w900,
+                                      color: isBelowTarget ? Colors.red : Theme.of(context).colorScheme.inversePrimary,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: maxWidth * -0.15,
+                                  child: Transform.rotate(
+                                    angle: -90 * (3.1415926535 / 180),
+                                    child: Text(
+                                      "PREDICTED GPA",
+                                      style: TextStyle(
+                                        fontSize: maxWidth * 0.037,
+                                        fontWeight: FontWeight.bold,
+                                        color:
+                                            isBelowTarget ? Colors.red : Theme.of(context).colorScheme.inversePrimary,
+                                        letterSpacing: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Text(
-                        isBelowTarget ? "You are NOT on track to meet your target." : "You are on track to meet your target!",
-                        style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary.withOpacity(.9)),
-                      ),
-                    ],
-                  ),
-                ),
-                if (isBelowTarget) // Overlay only if GPA is below target
-                  Positioned.fill(
-                    child: Container(
-                      color: Colors.red.withOpacity(.2), // Semi-transparent red overlay
+                        SizedBox(height: 15),
+                        Text(
+                          isBelowTarget
+                              ? "You are NOT on track to meet your target."
+                              : "You are on track to meet your target!",
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.inversePrimary.withOpacity(.9),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                Positioned(
-                  right: 5,
-                  top: 5,
-                  child: IconButton(
-                    icon: const Icon(Icons.settings, size: 28),
-                    onPressed: () {
-                      HapticFeedback.lightImpact();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SettingsPage()),
-                      );
-                    },
+                  if (isBelowTarget)
+                    Positioned.fill(
+                      child: Container(color: Colors.red.withOpacity(.2)), // Red alert overlay
+                    ),
+                  Positioned(
+                    right: 5,
+                    top: 5,
+                    child: IconButton(
+                      icon: const Icon(Icons.settings, size: 28),
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SettingsPage()),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             Expanded(
               child: Consumer<GPAProvider>(
                 builder: (context, gpaProvider, child) {
@@ -250,7 +277,7 @@ class _CourseListState extends State<CourseList> {
                           ),
                           const SizedBox(height: 16), // Add some spacing between the image and text
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal:40),
+                            padding: const EdgeInsets.symmetric(horizontal: 40),
                             child: const Text(
                               'No courses added. Press "Add Course" to enter your current and future course info!',
                               textAlign: TextAlign.center,
@@ -264,9 +291,14 @@ class _CourseListState extends State<CourseList> {
                   }
                   return ListView.separated(
                     padding: EdgeInsets.only(bottom: 110),
-                    itemCount: courses.length + (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 ? 1 : 0), // Conditionally add the previous credits tile
+                    itemCount: courses.length +
+                        (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0
+                            ? 1
+                            : 0), // Conditionally add the previous credits tile
                     itemBuilder: (context, index) {
-                      if (gpaProvider.showPreviousCourses && gpaProvider.previousCredits > 0 && index == courses.length) {
+                      if (gpaProvider.showPreviousCourses &&
+                          gpaProvider.previousCredits > 0 &&
+                          index == courses.length) {
                         // Slidable "Previous Credits" tile
                         return Slidable(
                           endActionPane: ActionPane(
@@ -309,7 +341,7 @@ class _CourseListState extends State<CourseList> {
                           ),
                         );
                       }
-        
+
                       final course = courses[index];
                       return Slidable(
                         endActionPane: ActionPane(
