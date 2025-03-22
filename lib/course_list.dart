@@ -196,7 +196,7 @@ class _CourseListState extends State<CourseList> {
                                     border: Border.all(
                                       color: isBelowTarget ?
                                       Colors.red :
-                                      isDarkMode ? Theme.of(context).colorScheme.scrim : Colors.black,
+                                      isDarkMode ? Theme.of(context).colorScheme.scrim : Theme.of(context).colorScheme.tertiaryFixed,
                                       width: 3,
                                     ),
                                     borderRadius: BorderRadius.circular(10),

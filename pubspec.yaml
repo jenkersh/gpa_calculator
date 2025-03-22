@@ -40,10 +40,16 @@ dependencies:
   shared_preferences: ^2.5.2
   url_launcher: ^6.3.1
   in_app_review: ^2.0.10
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "images/gpa-icon.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
