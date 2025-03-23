@@ -330,7 +330,7 @@ class _CourseListState extends State<CourseList> {
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                             ),
                             subtitle: Text(
-                              "Grade: ${gpaProvider.previousGrade.toStringAsFixed(2)} \u2022 ${gpaProvider.previousCredits} credits",
+                              "Grade: ${gpaProvider.previousGrade.toStringAsFixed(2)} • ${gpaProvider.previousCredits} credit${gpaProvider.previousCredits == 1 ? '' : 's'}",
                               style: TextStyle(color: Theme.of(context).colorScheme.tertiaryFixed),
                             ),
                             onTap: () {
@@ -344,7 +344,7 @@ class _CourseListState extends State<CourseList> {
                         );
                       }
 
-                      final course = courses[index];
+                      final course = courses[courses.length - 1 - index];
                       return Slidable(
                         endActionPane: ActionPane(
                           motion: const DrawerMotion(),
@@ -374,8 +374,8 @@ class _CourseListState extends State<CourseList> {
                           ),
                           subtitle: Text(
                             course['completed'] == 'yes'
-                                ? 'Grade: ${course['grade']} \u2022 ${course['credits']} credits'
-                                : 'Predicted Grade: ${course['grade']} \u2022 ${course['credits']} credits',
+                                ? 'Grade: ${course['grade']} • ${course['credits']} credit${course['credits'] == 1 ? '' : 's'}'
+                                : 'Predicted Grade: ${course['grade']} • ${course['credits']} credit${course['credits'] == 1 ? '' : 's'}',
                             style: TextStyle(color: Theme.of(context).colorScheme.tertiaryFixed),
                           ),
                         ),
