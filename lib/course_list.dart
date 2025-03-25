@@ -324,6 +324,7 @@ class _CourseListState extends State<CourseList> {
                             leading: Icon(
                               Icons.history,
                               color: Theme.of(context).colorScheme.tertiaryFixed,
+                              size: 30,
                             ),
                             title: const Text(
                               "Previous Courses",
@@ -367,6 +368,7 @@ class _CourseListState extends State<CourseList> {
                           leading: Icon(
                             IconData(course['icon'], fontFamily: 'MaterialIcons'),
                             color: Theme.of(context).colorScheme.tertiaryFixed,
+                            size: 30,
                           ),
                           title: Text(
                             course['name'],
