@@ -350,12 +350,12 @@ class _CourseListState extends State<CourseList> {
                           motion: const DrawerMotion(),
                           children: [
                             SlidableAction(
-                              onPressed: (context) => editCourse(index),
+                              onPressed: (context) => editCourse(courses.length - 1 - index),
                               icon: Icons.edit,
                               backgroundColor: Theme.of(context).colorScheme.secondary,
                             ),
                             SlidableAction(
-                              onPressed: (context) => deleteCourse(index),
+                              onPressed: (context) => deleteCourse(courses.length - 1 - index),
                               icon: Icons.delete,
                               backgroundColor: Colors.red.withOpacity(0.7),
                             ),
@@ -363,7 +363,7 @@ class _CourseListState extends State<CourseList> {
                         ),
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-                          onTap: () => editCourse(index),
+                          onTap: () => editCourse(courses.length - 1 - index),
                           leading: Icon(
                             IconData(course['icon'], fontFamily: 'MaterialIcons'),
                             color: Theme.of(context).colorScheme.tertiaryFixed,
