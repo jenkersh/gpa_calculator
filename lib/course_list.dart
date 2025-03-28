@@ -365,11 +365,13 @@ class _CourseListState extends State<CourseList> {
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                           onTap: () => editCourse(courses.length - 1 - index),
+                          // In the ListTile widget:
                           leading: Icon(
-                            course['icon'] is IconData ? course['icon'] : Icons.book, // Default to Icons.book if invalid
+                            IconData(course['icon'], fontFamily: 'MaterialIcons'), // Convert back from the stored codePoint
                             color: Theme.of(context).colorScheme.tertiaryFixed,
                             size: 30,
                           ),
+
 
                           title: Text(
                             course['name'],

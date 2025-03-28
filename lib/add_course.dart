@@ -392,7 +392,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
             ),
             MyTile(
               title: "Course Icon",
-              value: Icon(_selectedIcon, color: Theme.of(context).colorScheme.tertiary), // Not needed for icon selection
+              value: Icon(_selectedIcon, color: Theme.of(context).colorScheme.tertiary, size: 30), // Not needed for icon selection
               onEdit: _showIconPicker,
             ),
             const Spacer(),
