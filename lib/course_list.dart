@@ -366,10 +366,11 @@ class _CourseListState extends State<CourseList> {
                           contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                           onTap: () => editCourse(courses.length - 1 - index),
                           leading: Icon(
-                            IconData(course['icon'], fontFamily: 'MaterialIcons'),
+                            course['icon'] is IconData ? course['icon'] : Icons.book, // Default to Icons.book if invalid
                             color: Theme.of(context).colorScheme.tertiaryFixed,
                             size: 30,
                           ),
+
                           title: Text(
                             course['name'],
                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),

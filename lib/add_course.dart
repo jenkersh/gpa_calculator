@@ -57,7 +57,12 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       _nameController.text = widget.courseData!['name'];
       _selectedCredits = widget.courseData!['credits'] ?? 3;
       _courseIcon = widget.courseData!['icon'];
-      _selectedIcon = IconData(_courseIcon, fontFamily: 'MaterialIcons');
+
+      // Ensure the selected icon is one of the predefined static values
+      _selectedIcon = courseIcons.values.firstWhere(
+            (icon) => icon.codePoint == _courseIcon,
+        orElse: () => Icons.school, // Default fallback
+      );
 
       // Ensure grade is stored with 2 decimal places
       double grade = double.tryParse(widget.courseData!['grade'].toString()) ?? 3.00;
@@ -67,6 +72,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       _gradeController.text = "3.00"; // Default grade with two decimals
     }
   }
+
 
 
   @override
